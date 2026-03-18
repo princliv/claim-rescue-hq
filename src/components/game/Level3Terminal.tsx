@@ -1,19 +1,41 @@
-import { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import GameHUD from './GameHUD';
 import InstructorFeedback from './InstructorFeedback';
 import QuestionInstructionModal from './QuestionInstructionModal';
 import { useLevelTimer } from '@/hooks/useLevelTimer';
 import { LevelResult } from '@/types/game';
-import { Terminal as TerminalIcon, CheckCircle, XCircle, FileText, MonitorSmartphone, Shield, Server, Check, X, Scale, Lightbulb } from 'lucide-react';
+import section2Bg from '@/assets/bg_section2.png';
+
+// React Icons Imports
+import { 
+  MdTerminal, 
+  MdCheckCircle, 
+  MdCancel, 
+  MdOutlineSecurity, 
+  MdDns, 
+  MdOutlineMonitor, 
+  MdOutlineFileCopy, 
+  MdOutlineScale, 
+  MdOutlineLightbulb, 
+  MdNavigateNext,
+  MdFactCheck 
+} from 'react-icons/md';
+import { 
+  BsFileMedicalFill, 
+  BsShieldLockFill, 
+  BsFillExclamationCircleFill, 
+  BsCpuFill, 
+  BsDatabaseFillCheck 
+} from 'react-icons/bs';
 
 interface Props { onComplete: (result: LevelResult) => void; }
 
 const TABS: Record<string, { label: string; icon: React.ReactNode; content: string[] }> = {
-  MHI: { label: 'MHI System', icon: <Server size={14} />, content: ['LCD applied: Yes', 'Denial Code: 17A', 'Modifier: LCD flagged'] },
-  CAS: { label: 'CAS Portal', icon: <Shield size={14} />, content: ['Authorization search...', 'Result: Authorization FOUND', 'Auth ID: CAS-8812'] },
-  CGX: { label: 'CGX 2.0', icon: <TerminalIcon size={14} />, content: ['CGX Authorization lookup...', 'Auth present: Yes', 'DX on auth: C34.1 (Lung cancer)', 'DX match: YES'] },
-  RFI: { label: 'RFI Center', icon: <FileText size={14} />, content: ['No additional RFI required', 'All documents on file'] },
+  MHI: { label: 'MHI System', icon: <MdDns size={14} />, content: ['LCD applied: Yes', 'Denial Code: 17A', 'Modifier: LCD flagged'] },
+  CAS: { label: 'CAS Portal', icon: <MdOutlineSecurity size={14} />, content: ['Authorization search...', 'Result: Authorization FOUND', 'Auth ID: CAS-8812'] },
+  CGX: { label: 'CGX 2.0', icon: <MdTerminal size={14} />, content: ['CGX Authorization lookup...', 'Auth present: Yes', 'DX on auth: C34.1 (Lung cancer)', 'DX match: YES'] },
+  RFI: { label: 'RFI Center', icon: <MdOutlineFileCopy size={14} />, content: ['No additional RFI required', 'All documents on file'] },
 };
 
 const QUESTIONS = [
@@ -43,7 +65,6 @@ export default function Level3Terminal({ onComplete }: Props) {
   const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
   const [typedLines, setTypedLines] = useState<string[]>([]);
   const [instructorMsg, setInstructorMsg] = useState<{ correct: boolean; text: string } | null>(null);
-  // Instruction modals: first on mount (tap-tabs), second when phase switches to questions (select-one)
   const [showInstruction, setShowInstruction] = useState(true);
   const [showQInstruction, setShowQInstruction] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -69,7 +90,7 @@ export default function Level3Terminal({ onComplete }: Props) {
     if (!visitedTabs.includes(key)) setVisitedTabs(v => [...v, key]);
     setTypedLines([]);
     TABS[key].content.forEach((line, i) => {
-      setTimeout(() => setTypedLines(l => [...l, line]), (i + 1) * 400);
+      setTimeout(() => setTypedLines(l => [...l, line]), (i + 1) * 300);
     });
   };
 
@@ -95,61 +116,69 @@ export default function Level3Terminal({ onComplete }: Props) {
   const handleHint = () => { if (hintsUsed < 2) { setShowHint(HINTS[hintsUsed]); setScore(s => s - 5); setHintsUsed(h => h + 1); } };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col bg-[#0a0f18] relative overflow-hidden">
+      {/* Immersive Background */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center z-0 opacity-40 mix-blend-screen scale-110 blur-[1px]"
+        style={{ backgroundImage: `url(${section2Bg})` }}
+      />
+      <div className="absolute inset-0 bg-[#0a0f18] z-0" />
+
       <QuestionInstructionModal visible={showInstruction} type="tap-tabs" onDismiss={() => setShowInstruction(false)} autoDismissMs={5000} />
       <QuestionInstructionModal visible={showQInstruction} type="select-one" onDismiss={() => setShowQInstruction(false)} autoDismissMs={5000} />
+      
       <GameHUD level={3} title="Authorization Override" score={score} timeLeft={timer.timeLeft} hintsLeft={2 - hintsUsed} onHint={handleHint} />
 
-      <div className={`flex-1 p-6 relative z-10`}>
-        {/* Scenario */}
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="glass-card rounded-xl p-5 mb-6 max-w-5xl mx-auto relative overflow-hidden">
+      <div className={`flex-1 p-6 relative z-10 w-full max-w-7xl mx-auto flex flex-col`}>
+        {/* Scenario Dossier */}
+        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="bg-white/95 backdrop-blur-md rounded-[32px] p-8 mb-8 border border-white/20 shadow-2xl relative overflow-hidden">
           {isLoading ? (
             <div className="space-y-4 animate-pulse">
-              <div className="flex items-center gap-2 mb-3">
-                <div className="w-4 h-4 rounded bg-primary/20" />
-                <div className="h-4 w-48 rounded bg-secondary" />
-                <div className="w-2 h-2 rounded-full bg-secondary ml-auto" />
-              </div>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-y-4 gap-x-6">
-                {[1, 2, 3, 4, 5, 6].map(i => (
-                  <div key={i} className="flex gap-2 items-center">
-                     <div className="h-3 w-16 rounded bg-secondary" />
-                     <div className="h-4 w-20 rounded bg-primary/10" />
-                  </div>
-                ))}
-              </div>
+               <div className="h-6 w-1/4 rounded bg-slate-100" />
+               <div className="grid grid-cols-3 gap-6">
+                 <div className="h-4 w-full rounded bg-slate-50" />
+                 <div className="h-4 w-full rounded bg-slate-50" />
+                 <div className="h-4 w-full rounded bg-slate-50" />
+               </div>
             </div>
           ) : (
             <>
-              <div className="flex items-center gap-2 mb-3">
-                <FileText size={16} className="text-primary" />
-                <span className="text-xs font-mono text-primary uppercase tracking-widest">Claim File — Case #CR-2024-003</span>
-                <div className="status-dot ml-auto" />
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded-2xl bg-primary/10 text-primary flex items-center justify-center">
+                  <BsFileMedicalFill size={20} />
+                </div>
+                <div>
+                  <h3 className="text-[10px] font-mono font-black text-primary uppercase tracking-widest leading-none mb-1">Authorization Review</h3>
+                  <span className="text-sm font-heading font-black text-slate-900 tracking-tight leading-none uppercase">Investigation Case #CR-2024-003</span>
+                </div>
               </div>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-y-3 gap-x-6 text-sm font-mono">
-                <div className="flex items-center gap-2">
-                  <span className="text-muted-foreground text-xs uppercase tracking-wider">Patient:</span>
-                  <span className="text-foreground font-semibold">David K</span>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="flex flex-col gap-1">
+                   <span className="text-[9px] font-mono font-black text-slate-400 uppercase tracking-widest mb-1">Patient & Procedure</span>
+                   <div className="flex justify-between items-center bg-slate-50 p-3 rounded-2xl border border-slate-100">
+                     <span className="text-xs font-mono font-bold text-slate-600 capitalize">DAVID K. • CT SCAN</span>
+                     <span className="px-2 py-0.5 rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-100 font-black text-[9px] uppercase">Active</span>
+                   </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-muted-foreground text-xs uppercase tracking-wider">Procedure:</span>
-                  <span className="text-foreground font-semibold">CT Scan</span>
+
+                <div className="flex flex-col gap-1">
+                   <span className="text-[9px] font-mono font-black text-slate-400 uppercase tracking-widest mb-1">Medical Metadata</span>
+                   <div className="flex gap-2">
+                     <span className="px-3 py-1.5 rounded-2xl bg-blue-50 text-blue-600 border-2 border-blue-100 font-mono font-black text-[13px] tracking-tighter">C34.1 DX</span>
+                     <span className="px-3 py-1.5 rounded-2xl bg-amber-50 text-amber-600 border-2 border-amber-100 font-mono font-black text-[13px] tracking-tighter">17A Code</span>
+                     <span className="px-3 py-1.5 rounded-2xl bg-primary/10 text-primary border-2 border-primary/20 font-mono font-black text-[13px] tracking-tighter">LCD Applied</span>
+                   </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-muted-foreground text-xs uppercase tracking-wider">DX:</span>
-                  <span className="px-2 py-0.5 rounded-md bg-primary/10 text-primary border border-primary/20 font-bold tracking-tight">C34.1</span>
-                  <span className="text-xs text-muted-foreground">(Lung cancer)</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-muted-foreground text-xs uppercase tracking-wider">Denial:</span>
-                  <span className="px-2 py-0.5 rounded-md bg-warning/10 text-warning border border-warning/20 font-bold tracking-tight">17A</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-muted-foreground text-xs uppercase tracking-wider">LCD:</span>
-                  <span className="text-foreground font-semibold">Yes</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="px-2 py-0.5 rounded-md bg-success/10 text-success border border-success/20 font-bold tracking-tight shadow-sm flex items-center gap-1"><Check size={12}/> Found in CGX 2.0</span>
+
+                <div className="flex flex-col gap-1">
+                   <span className="text-[9px] font-mono font-black text-emerald-600 uppercase tracking-widest mb-1">External Authorization Link</span>
+                   <div className="flex justify-between items-center bg-slate-900 p-3 rounded-2xl border-2 border-slate-800 shadow-xl shadow-emerald-500/5">
+                     <span className="text-[11px] font-mono font-black text-white tracking-tighter flex items-center gap-1.5 uppercase">
+                       <BsDatabaseFillCheck className="text-emerald-400 animate-pulse" /> FOUND IN CGX 2.0
+                     </span>
+                     <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
+                   </div>
                 </div>
               </div>
             </>
@@ -157,142 +186,201 @@ export default function Level3Terminal({ onComplete }: Props) {
         </motion.div>
 
         {phase === 'explore' ? (
-          <div className="max-w-5xl mx-auto">
-            <div className="flex items-center gap-2 mb-4 justify-center">
-              <MonitorSmartphone size={14} className="text-primary" />
-              <p className="text-xs font-mono text-muted-foreground">Access each system to gather intelligence</p>
-            </div>
-            <div className="flex gap-2 mb-0">
-              {Object.keys(TABS).map(key => (
-                <button key={key} onClick={() => openTab(key)}
-                  className={`px-5 py-2.5 rounded-t-xl font-mono text-xs transition-all border-t border-l border-r flex items-center gap-2 ${
-                    activeTab === key
-                      ? 'bg-white border-border text-primary font-bold border-primary/40'
-                      : visitedTabs.includes(key)
-                        ? 'bg-secondary/50 border-border/50 text-success'
-                        : 'bg-secondary border-border text-muted-foreground hover:text-foreground hover:bg-secondary/80'
-                  }`}>
-                  <span>{TABS[key].icon}</span>
-                  {visitedTabs.includes(key) && activeTab !== key && <CheckCircle size={10} />}
-                  {TABS[key].label}
-                </button>
-              ))}
-            </div>
-            <div className="bg-white border rounded-b-xl rounded-tr-xl p-5 min-h-[180px] font-mono text-sm">
-              {!activeTab ? (
-                <div className="text-muted-foreground flex items-center gap-2">
-                  <TerminalIcon size={14} className="text-primary animate-pulse" />
-                  <span>Awaiting system access... Select a terminal tab above</span>
-                  <span className="animate-pulse">▌</span>
+          <div className="flex-1 flex flex-col">
+            <div className="mb-8 flex items-center justify-between">
+              <div>
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-white/60 font-mono text-[9px] mb-2">
+                  <BsCpuFill size={10} className="text-primary animate-spin-slow" /> MULTI-SYSTEM TERMINAL ACCESS
                 </div>
-              ) : (
-                <div className="space-y-1.5">
-                  <p className="text-primary">{`> Connecting to ${TABS[activeTab].label}...`}</p>
-                  <p className="text-success text-xs">Connection established ✓</p>
-                  <div className="h-px bg-border my-2" />
-                  {typedLines.map((line, i) => (
-                    <motion.p key={i} initial={{ opacity: 0, x: -5 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.2 }}
-                      className={`text-foreground ${line.includes('YES') || line.includes('Yes') ? 'text-success' : ''}`}>
-                      {`  > ${line}`}
-                    </motion.p>
-                  ))}
-                  {typedLines.length > 0 && <span className="text-primary animate-pulse">▌</span>}
-                </div>
-              )}
+                <h2 className="text-xl font-heading font-black text-white tracking-tight uppercase">System Intelligence Gathering</h2>
+              </div>
+              
+              <div className="flex items-center gap-4">
+                 <div className="flex gap-1.5">
+                   {Object.keys(TABS).map(key => (
+                     <div key={key} className={`w-2 h-2 rounded-full transition-all duration-500 ${visitedTabs.includes(key) ? 'bg-primary shadow-[0_0_8px_rgba(37,99,235,1)]' : 'bg-slate-700'}`} />
+                   ))}
+                 </div>
+                 <span className="text-[10px] font-mono font-black text-slate-500 uppercase tracking-widest">{visitedTabs.length}/4 SYSTEMS SAMPLED</span>
+              </div>
             </div>
 
-            <div className="flex items-center justify-between mt-6">
-              <div className="flex gap-2">
-                {Object.keys(TABS).map(key => (
-                  <div key={key} className={`w-2.5 h-2.5 rounded-full ${visitedTabs.includes(key) ? 'bg-success' : 'bg-secondary'}`} />
-                ))}
-                <span className="text-xs font-mono text-muted-foreground ml-2">{visitedTabs.length}/4 systems accessed</span>
+            <div className="flex-1 flex flex-col max-h-[500px]">
+              {/* Tab Navigation */}
+              <div className="flex gap-2 mb-0 overflow-x-auto no-scrollbar">
+                {Object.keys(TABS).map(key => {
+                   const isActive = activeTab === key;
+                   const isVisited = visitedTabs.includes(key);
+                   return (
+                    <button key={key} onClick={() => openTab(key)}
+                      className={`px-8 py-4 rounded-t-3xl font-mono text-[11px] font-black transition-all border-t-2 border-x-2 flex items-center gap-3 whitespace-nowrap tracking-widest uppercase ${
+                        isActive
+                          ? 'bg-slate-900 border-primary text-primary'
+                          : isVisited
+                            ? 'bg-slate-900/40 border-slate-800 text-slate-400 hover:text-slate-200'
+                            : 'bg-transparent border-transparent text-slate-500 hover:text-slate-300'
+                      }`}>
+                      <span className={`${isActive ? 'text-primary' : 'text-slate-600'}`}>{TABS[key].icon}</span>
+                      {TABS[key].label}
+                      {isVisited && !isActive && <MdCheckCircle size={14} className="text-emerald-500 ml-1" />}
+                    </button>
+                   );
+                })}
               </div>
-              <motion.button whileHover={{ scale: 1.02 }} onClick={() => { setPhase('questions'); setShowQInstruction(true); }}
-                className="px-6 py-3 bg-primary text-primary-foreground rounded-lg font-heading font-semibold shadow-sm">
-                Proceed to Questions →
+
+              {/* Terminal Window */}
+              <div className="flex-1 bg-slate-900 shadow-2xl rounded-b-[40px] rounded-tr-[40px] p-8 border-x-2 border-b-2 border-slate-800 relative overflow-hidden group">
+                {/* CRT Screen Effect */}
+                {/* Scanlines Removed */}
+                
+                <div className="relative z-10 font-mono text-[13px] leading-relaxed">
+                  {!activeTab ? (
+                    <div className="h-full flex flex-col items-center justify-center text-slate-500 space-y-4">
+                      <MdOutlineMonitor size={64} className="opacity-10 animate-pulse text-white" />
+                      <div className="flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-primary animate-ping" />
+                        <span className="uppercase tracking-[0.3em] font-black italic">AWAITING CONNECTION...</span>
+                      </div>
+                      <p className="text-[10px] opacity-40">Select a secure terminal frequency above to begin data extraction.</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between pb-4 border-b border-white/5">
+                        <div className="flex items-center gap-3">
+                           <span className="text-primary font-black uppercase text-[10px] tracking-widest">Connection: Secure</span>
+                           <span className="text-slate-600 font-black text-[10px]">#882-SYS-AUTH</span>
+                        </div>
+                        <span className="text-[10px] font-black text-rose-500/50 animate-pulse uppercase tracking-widest">Live Uplink</span>
+                      </div>
+
+                      <div className="space-y-3 pt-2">
+                        <p className="text-primary font-bold">{`> initializing authentication protocol for ${TABS[activeTab].label}...`}</p>
+                        <p className="text-emerald-500 font-bold italic tracking-tighter">» Connection established via secure node. [SUCCESS]</p>
+                        
+                        <div className="pl-4 space-y-2 border-l border-white/5 mt-6">
+                          {typedLines.map((line, i) => (
+                            <motion.p key={i} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.3 }}
+                              className={`${line.includes('YES') || line.includes('Yes') || line.includes('FOUND') ? 'text-emerald-400 font-black' : 'text-slate-300'}`}>
+                              {`  • ${line}`}
+                            </motion.p>
+                          ))}
+                          <span className="inline-block w-2.5 h-5 bg-primary animate-[pulse_0.8s_infinite] align-middle ml-2" />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-8 flex items-center justify-end">
+              <motion.button 
+                whileHover={{ scale: 1.05, y: -5 }} 
+                whileTap={{ scale: 0.95 }}
+                onClick={() => { setPhase('questions'); setShowQInstruction(true); }}
+                className="group flex items-center gap-3 px-10 py-5 bg-primary text-white rounded-[24px] font-mono text-[13px] font-black shadow-2xl shadow-primary/30 transition-all uppercase tracking-widest"
+              >
+                Engage Analytical Mode <MdNavigateNext size={24} className="group-hover:translate-x-1 transition-transform" />
               </motion.button>
             </div>
           </div>
         ) : (
-          <div className="max-w-lg mx-auto">
-            <div className="flex gap-1.5 mb-5">
-              {QUESTIONS.map((_, i) => (
-                <div key={i} className={`flex-1 h-1.5 rounded-full transition-all duration-500 ${i < currentQ ? 'bg-primary box-glow' : i === currentQ ? 'bg-primary/40' : 'bg-secondary'}`} />
-              ))}
-            </div>
-            <AnimatePresence mode="wait">
-              <motion.div key={currentQ} initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }}
-                className="glass-card rounded-xl p-6">
-                <div className={`flex items-center gap-1.5 px-2 py-0.5 rounded text-xs font-mono font-bold inline-block mb-3 ${
-                  QUESTIONS[currentQ].isFinal ? 'bg-warning/15 text-warning border border-warning/30' : 'bg-primary/10 text-primary border border-primary/20'
-                }`}>
-                  {QUESTIONS[currentQ].isFinal ? <><Scale size={12} /> FINAL RULING</> : `PHASE ${currentQ + 1}`}
-                </div>
-                {QUESTIONS[currentQ].isFinal ? (
-                  <div className="text-center py-4">
-                    <p className="text-xl font-heading font-bold text-foreground mb-6">{QUESTIONS[currentQ].question}</p>
-                    <div className="flex gap-4 justify-center">
+          /* Question Phase */
+          <div className="flex-1 flex flex-col items-center justify-center">
+            <div className="max-w-2xl w-full">
+               {/* Node-based Progress Tracker */}
+               <div className="flex items-center gap-0 mb-12 px-12">
+                {QUESTIONS.map((_, i) => {
+                   const isDone = i < currentQ;
+                   const isCurrent = i === currentQ;
+                   const isLast = i === QUESTIONS.length - 1;
+                   return (
+                     <div key={i} className={`flex-1 flex items-center ${isLast ? 'flex-none' : ''}`}>
+                        <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-xs font-black transition-all duration-500 border-2 z-10 ${
+                          isDone ? 'bg-primary border-primary text-white shadow-lg shadow-primary/20 scale-110' : isCurrent ? 'bg-white border-primary text-primary shadow-lg shadow-primary/20' : 'bg-slate-800 border-slate-700 text-slate-500'
+                        }`}>
+                          {isDone ? <MdCheckCircle size={16} /> : i + 1}
+                        </div>
+                        {!isLast && (
+                           <div className="flex-1 h-1 mx-[-2px] relative">
+                             <div className="absolute inset-0 bg-slate-800 rounded-full" />
+                             {isDone && <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} className="absolute inset-0 origin-left bg-primary rounded-full shadow-[0_0_10px_rgba(59,130,246,0.5)]" />}
+                           </div>
+                        )}
+                     </div>
+                   )
+                })}
+              </div>
+
+              <AnimatePresence mode="wait">
+                <motion.div key={currentQ} initial={{ opacity: 0, y: 30, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: -30, scale: 0.98 }}
+                  transition={{ duration: 0.4, type: "spring", stiffness: 300, damping: 20 }}
+                  className="bg-slate-900/40 backdrop-blur-xl rounded-[40px] p-10 md:p-14 border border-white/10 shadow-[0_40px_100px_rgba(0,0,0,0.3)] relative overflow-hidden"
+                >
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-bl-full blur-3xl text-foreground" />
+                  
+                  <div className="relative z-10">
+                    <div className="flex items-center gap-3 mb-8">
+                      <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-[9px] font-mono font-black tracking-widest uppercase border ${
+                        QUESTIONS[currentQ].isFinal ? 'bg-amber-950/40 text-amber-500 border-amber-500/30' : 'bg-primary/20 text-primary border-primary/30'
+                      }`}>
+                        {QUESTIONS[currentQ].isFinal ? <><MdOutlineScale size={14} /> Settlement Phase</> : <><MdFactCheck size={14} /> Analysis Point 0{currentQ + 1}</>}
+                      </div>
+                    </div>
+
+                    <h2 className="text-3xl md:text-5xl font-heading font-black text-white tracking-tighter leading-none mb-10 max-w-2xl">
+                      {QUESTIONS[currentQ].question}
+                    </h2>
+
+                    <div className={`grid gap-4 ${QUESTIONS[currentQ].isFinal ? 'grid-cols-2' : 'grid-cols-1'}`}>
                       {QUESTIONS[currentQ].options.map((opt, i) => {
                         const isSelected = selectedIdx === i;
                         const isCorrectOpt = i === QUESTIONS[currentQ].correct;
                         const showCorrect = feedback && isCorrectOpt;
                         const showWrong = feedback === 'wrong' && isSelected && !isCorrectOpt;
+                        
                         return (
                           <motion.button
                             key={i}
-                            whileHover={!feedback ? { scale: 1.05 } : {}}
-                            whileTap={!feedback ? { scale: 0.95 } : {}}
+                            whileHover={!feedback ? { scale: 1.02, x: QUESTIONS[currentQ].isFinal ? 0 : 8 } : {}}
+                            whileTap={!feedback ? { scale: 0.98 } : {}}
                             onClick={() => handleAnswer(i)}
                             disabled={feedback !== null}
-                            className={`flex-1 flex flex-col items-center justify-center gap-2 p-5 rounded-xl font-mono text-base transition-all border ${
-                              showCorrect ? 'bg-success/10 border-success/50 text-success shadow-md'
-                              : showWrong ? 'bg-destructive/10 border-destructive/50 text-destructive shadow-md'
-                              : 'border-primary/20 bg-primary/5 hover:border-primary/50 hover:bg-primary/10 text-foreground'
+                            className={`w-full flex items-center justify-between text-left px-8 py-5 rounded-3xl font-mono text-sm transition-all border-2 relative overflow-hidden ${
+                              showCorrect
+                                ? 'bg-emerald-500/20 border-emerald-500 text-emerald-400 shadow-[0_0_30px_rgba(16,185,129,0.2)]'
+                                : showWrong
+                                  ? 'bg-rose-500/20 border-rose-500 text-rose-400 shadow-[0_0_30px_rgba(244,63,94,0.2)]'
+                                  : 'bg-white/5 border-white/5 hover:border-white/20 hover:bg-white/10 text-slate-300'
                             }`}
                           >
-                            {opt}
+                            <div className="flex items-center gap-4 relative z-10">
+                              <span className={`w-10 h-10 rounded-2xl flex items-center justify-center text-xs font-black transition-all ${
+                                showCorrect ? 'bg-emerald-500 text-white' : showWrong ? 'bg-rose-500 text-white' : 'bg-white/10 text-white'
+                              }`}>
+                                {showCorrect ? <MdCheckCircle size={20} /> : showWrong ? <MdCancel size={20} /> : String.fromCharCode(65 + i)}
+                              </span>
+                              <span className={`font-bold ${showCorrect ? 'text-emerald-400' : showWrong ? 'text-rose-400' : ''}`}>{opt}</span>
+                            </div>
                           </motion.button>
                         );
                       })}
                     </div>
                   </div>
-                ) : (
-                  <>
-                    <p className="text-lg font-heading font-semibold text-foreground mb-5">{QUESTIONS[currentQ].question}</p>
-                    <div className="space-y-2.5">
-                      {QUESTIONS[currentQ].options.map((opt, i) => {
-                        const isCorrectOpt = i === QUESTIONS[currentQ].correct;
-                        const showCorrect = feedback && isCorrectOpt;
-                        const showWrong = feedback === 'wrong' && selectedIdx === i && !isCorrectOpt;
-                        return (
-                          <motion.button key={i} whileHover={!feedback ? { scale: 1.02, x: 4 } : {}} onClick={() => handleAnswer(i)} disabled={feedback !== null}
-                            className={`w-full flex items-center gap-3 text-left px-5 py-3.5 rounded-xl font-mono text-sm transition-all border ${
-                              showCorrect ? 'bg-success/10 border-success/50 text-success'
-                              : showWrong ? 'bg-destructive/10 border-destructive/50 text-destructive'
-                              : 'border-border bg-secondary/30 hover:border-primary/40 hover:text-primary text-foreground'
-                            }`}>
-                            <span className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0 ${
-                              showCorrect ? 'bg-success/20 text-success' : showWrong ? 'bg-destructive/20 text-destructive' : 'bg-secondary text-muted-foreground'
-                            }`}>
-                              {showCorrect ? <CheckCircle size={14} /> : showWrong ? <XCircle size={14} /> : String.fromCharCode(65 + i)}
-                            </span>
-                            {opt}
-                          </motion.button>
-                        );
-                      })}
-                    </div>
-                  </>
-                )}
-              </motion.div>
-            </AnimatePresence>
+                </motion.div>
+              </AnimatePresence>
+            </div>
           </div>
         )}
 
         <AnimatePresence>
           {showHint && (
-            <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="max-w-5xl mx-auto mt-4 p-3 bg-warning/10 border border-warning/30 rounded-xl text-warning text-xs font-mono flex items-center gap-2">
-              <Lightbulb size={14} className="flex-shrink-0" /> {showHint}
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} className="max-w-xl mx-auto mt-12 p-6 bg-amber-500/10 border-2 border-amber-900/30 rounded-[32px] text-amber-500 text-[11px] font-mono flex items-center gap-4">
+              <BsFillExclamationCircleFill size={20} className="flex-shrink-0" />
+              <div>
+                <span className="font-black uppercase tracking-widest text-[9px] block mb-0.5">Tactical Hint</span>
+                <span className="font-bold opacity-90">{showHint}</span>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>

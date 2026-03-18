@@ -9,6 +9,7 @@ import Level2DragDrop from '@/components/game/Level2DragDrop';
 import Level3Terminal from '@/components/game/Level3Terminal';
 import Level4Comparison from '@/components/game/Level4Comparison';
 import Level5SplitScreen from '@/components/game/Level5SplitScreen';
+import RoleBriefing from '@/components/game/RoleBriefing';
 
 const Index = () => {
   const { state, navigate, startLevel, completeLevel, resetGame } = useGameState();
@@ -31,7 +32,10 @@ const Index = () => {
       <AnimatePresence mode="wait">
         <motion.div key={state.currentScreen + state.currentLevel} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
           {state.currentScreen === 'start' && (
-            <StartScreen bestScore={state.bestScore} onStart={() => navigate('levelSelect')} />
+            <StartScreen bestScore={state.bestScore} onStart={() => navigate('roleBriefing')} />
+          )}
+          {state.currentScreen === 'roleBriefing' && (
+            <RoleBriefing onContinue={() => navigate('levelSelect')} />
           )}
           {state.currentScreen === 'levelSelect' && (
             <LevelSelect

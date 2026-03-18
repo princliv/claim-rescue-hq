@@ -1,5 +1,7 @@
+import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle, XCircle, Stethoscope } from 'lucide-react';
+import { MdCheckCircle, MdCancel } from 'react-icons/md';
+import instructorAvatar from '@/assets/avatar.png';
 
 interface Props {
   visible: boolean;
@@ -7,85 +9,54 @@ interface Props {
   explanation: string;
 }
 
-const CORRECT_MESSAGES = [
-  "Excellent work, analyst!",
-  "Well done! Sharp thinking!",
-  "Perfect call! You nailed it!",
-  "Outstanding! That's the right move!",
-  "Spot on! Great analysis!",
-];
-
-const WRONG_MESSAGES = [
-  "Not quite right. Let me explain...",
-  "Close, but not the correct choice.",
-  "That's incorrect. Here's why:",
-  "Wrong call. Let's review:",
-];
-
-function getRandomMessage(arr: string[]) {
-  return arr[Math.floor(Math.random() * arr.length)];
-}
-
 export default function InstructorFeedback({ visible, isCorrect, explanation }: Props) {
   return (
     <AnimatePresence>
       {visible && (
         <motion.div
-          initial={{ opacity: 0, y: 30, scale: 0.9 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: 20, scale: 0.9 }}
-          transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-          className="fixed bottom-6 right-6 z-50 max-w-sm w-[90vw]"
+           initial={{ opacity: 0, x: 50 }}
+           animate={{ opacity: 1, x: 0 }}
+           exit={{ opacity: 0, x: 50 }}
+           transition={{ type: 'spring', stiffness: 200, damping: 25 }}
+           className="fixed top-28 right-8 z-[100] flex flex-col items-center gap-y-4 max-w-[320px] pointer-events-none"
         >
-          <div className={`rounded-xl border p-4 bg-white shadow-lg flex items-start gap-4 ${
-            isCorrect
-              ? 'border-success/40'
-              : 'border-destructive/40'
-          }`}>
-            {/* Avatar */}
+          {/* ── Just the Avatar Image As-Is (No Modal/Border) ── */}
+          <div className="relative pointer-events-auto">
             <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ type: 'spring', stiffness: 400, delay: 0.1 }}
-              className={`w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0 text-2xl ${
-                isCorrect ? 'bg-success/20' : 'bg-destructive/20'
-              }`}
+               className="w-44 h-44 drop-shadow-2xl relative"
             >
-              {isCorrect ? <Stethoscope size={24} className="text-success" /> : <Stethoscope size={24} className="text-destructive" />}
+               <img 
+                 src={instructorAvatar} 
+                 alt="Dr. Claims" 
+                 className="w-full h-full object-contain contrast-125 grayscale-0 rounded-3xl"
+               />
+               
+               {/* Fixed Status Indicator */}
+               <div className={`absolute top-4 right-4 p-1 rounded-full border-2 border-white shadow-lg ${
+                 isCorrect ? 'bg-emerald-500' : 'bg-rose-500'
+               }`}>
+                  {isCorrect ? <MdCheckCircle size={18} className="text-white" /> : <MdCancel size={18} className="text-white" />}
+               </div>
             </motion.div>
+          </div>
 
-            <div className="flex-1 min-w-0">
-              {/* Instructor label */}
-              <div className="flex items-center gap-2 mb-1">
-                <span className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Dr. Claims — Senior Analyst</span>
-                {isCorrect ? (
-                  <CheckCircle size={14} className="text-success" />
-                ) : (
-                  <XCircle size={14} className="text-destructive" />
-                )}
-              </div>
-
-              {/* Message */}
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.15 }}
-                className={`text-sm font-heading font-bold mb-1 ${
-                  isCorrect ? 'text-success' : 'text-destructive'
-                }`}
-              >
-                {getRandomMessage(isCorrect ? CORRECT_MESSAGES : WRONG_MESSAGES)}
-              </motion.p>
-
-              {/* Explanation */}
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.25 }}
-                className="text-xs font-mono text-foreground/80 leading-relaxed"
-              >
-                {explanation}
-              </motion.p>
+          {/* ── Text-Only Feedback (No Modal Container) ── */}
+          <div className="relative pointer-events-auto text-center mt-2 w-full px-6">
+            <motion.p
+               initial={{ opacity: 0, y: 10 }}
+               animate={{ opacity: 1, y: 0 }}
+               transition={{ delay: 0.15 }}
+               className={`text-sm font-mono font-black tracking-tight leading-relaxed drop-shadow-md py-4 px-2 rounded-2xl bg-white/95 border-2 ${
+                 isCorrect ? 'text-emerald-600 border-emerald-500' : 'text-rose-600 border-rose-500'
+               }`}
+            >
+               {explanation}
+            </motion.p>
+            
+            <div className="mt-2 flex items-center justify-center gap-2 bg-slate-100 rounded-full px-4 py-1.5 opacity-80 border border-slate-200">
+              <span className="text-[10px] font-mono font-black text-slate-800 uppercase tracking-widest whitespace-nowrap">
+                DR. CLAIMS | RCM_SPECIALIST
+              </span>
             </div>
           </div>
         </motion.div>

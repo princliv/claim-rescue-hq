@@ -1,9 +1,9 @@
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Activity, BookOpen, Trophy, Shield, Target, ChevronRight, Layers, FileText, Search, Puzzle } from 'lucide-react';
 import { useState, useRef } from 'react';
 import HowToPlayModal from './HowToPlayModal';
 import ParticleField from './ParticleField';
-import section1Bg from '@/assets/bg_section1.png';
+import section2Bg from '@/assets/bg_section2.png';
 
 interface StartScreenProps {
   bestScore: number;
@@ -20,115 +20,132 @@ const LEVELS = [
 
 export default function StartScreen({ bestScore, onStart }: StartScreenProps) {
   const [showHelp, setShowHelp] = useState(false);
-  
-  // Ref for the horizontal scroll section
-  const horizontalRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: horizontalRef,
-    offset: ["start start", "end end"]
-  });
 
-  const x = useTransform(scrollYProgress, [0, 1], ["0%", "-70%"]);
+  // Auto-scrolling marquee settings
+  const marqueeDuration = 30;
 
   return (
     <div className="bg-background min-h-screen font-sans text-foreground overflow-x-hidden flex flex-col">
 
       {/* SECTION 1: Hero Heading - Fixed Pixel Height & Left Aligned */}
-      <section 
-        className="h-[180px] px-6 md:px-12 xl:px-24 flex flex-col items-start justify-center relative z-10 overflow-hidden border-b border-border/40 bg-cover bg-center"
-        style={{ backgroundImage: `url(${section1Bg})` }}
+      <section
+        className="h-[180px] flex relative z-10 overflow-hidden"
       >
-        {/* Overlay for readability */}
-        <div className="absolute inset-0 bg-white/60 backdrop-blur-[2px] z-0" />
-        <ParticleField />
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.3 }}
-          className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/5 border border-primary/20 text-primary font-mono text-[10px] mb-4 relative z-10"
-        >
-          <Target size={10} />
-          Professional Clinical Training Simulation
-        </motion.div>
-
-        <div className="flex flex-col md:flex-row md:items-end md:gap-4 relative z-10">
-          <motion.h1
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.4, duration: 0.6 }}
-            className="text-5xl md:text-7xl font-heading font-black text-primary tracking-tighter leading-none"
-          >
-            CLAIM
-          </motion.h1>
-          <motion.h1
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.5, duration: 0.6 }}
-            className="text-5xl md:text-7xl font-heading font-black text-foreground tracking-tighter leading-none"
-          >
-            RESCUE
-          </motion.h1>
-          
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.7 }}
-            className="mt-4 md:mt-0 md:mb-1 text-sm text-muted-foreground font-mono max-w-sm border-l-0 md:border-l md:pl-4 border-border/60"
-          >
-            Master the art of LCD/NCD compliance and investigation.
-          </motion.p>
+        {/* Blue Side Panel (Mirroring Section 2 for continuity) */}
+        <div className="hidden lg:flex w-24 xl:w-32 bg-primary flex-col items-center pt-12 flex-shrink-0 relative">
+          {/* Decorative dots to match side panel theme */}
+          <div className="flex flex-col gap-1 opacity-40">
+            <div className="w-1 h-1 bg-white rounded-full scale-110"></div>
+            <div className="w-1 h-1 bg-white rounded-full"></div>
+            <div className="w-1 h-1 bg-white rounded-full scale-90"></div>
+          </div>
         </div>
-        
-        {bestScore > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8 }}
-            className="mt-4 inline-flex items-center gap-2 px-3 py-1 rounded-md bg-white border border-warning/30 shadow-sm text-foreground font-mono text-[11px] relative z-10"
-          >
-            <Trophy size={12} className="text-warning" />
-            RECORD: {bestScore} PTS
-          </motion.div>
-        )}
-      </section>
 
-      {/* SECTION 2: Horizontal Scroll with Side Panel (As per screenshot) */}
-      <section ref={horizontalRef} className="h-[110vh] relative z-20 bg-[#f4f7ff] overflow-visible">
-        <div className="sticky top-0 h-screen flex overflow-hidden">
-          {/* Blue Side Panel (Mirroring the orange one in the screenshot) */}
-          <div className="hidden lg:flex w-24 xl:w-32 bg-primary flex-col justify-end pb-12 items-center text-white relative">
-            <motion.div 
-              style={{ opacity: useTransform(scrollYProgress, [0, 0.2], [0, 1]) }}
-              className="vertical-text font-heading font-black text-2xl tracking-[0.2em] whitespace-nowrap -rotate-90 origin-center mb-24"
+        <div
+          className="flex-1 px-6 md:px-12 xl:px-[120px] flex flex-col items-start justify-center relative bg-background"
+        >
+          <ParticleField />
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.3 }}
+            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/5 border border-primary/20 text-primary font-mono text-[10px] mb-4 relative z-10"
+          >
+            <Target size={10} />
+            Professional Clinical Training Simulation
+          </motion.div>
+
+          <div className="flex flex-col md:flex-row md:items-end md:gap-4 relative z-10">
+            <motion.h1
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.4, duration: 0.6 }}
+              className="text-5xl md:text-7xl font-heading font-black text-primary tracking-tighter leading-none"
             >
-              INVESTIGATIONS
-            </motion.div>
-            <div className="absolute top-12 left-0 right-0 flex flex-col items-center gap-1 opacity-40">
-               <div className="w-1 h-1 bg-white rounded-full"></div>
-               <div className="w-1 h-1 bg-white rounded-full"></div>
-               <div className="w-1 h-1 bg-white rounded-full"></div>
-            </div>
+              ANALYTICAL
+            </motion.h1>
+            <motion.h1
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.5, duration: 0.6 }}
+              className="text-5xl md:text-7xl font-heading font-black text-foreground tracking-tighter leading-none"
+            >
+              SUITE
+            </motion.h1>
+
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.7 }}
+              className="mt-4 md:mt-0 md:mb-1 text-sm text-muted-foreground font-mono max-w-sm border-l-0 md:border-l md:pl-4 border-border/60"
+            >
+              Master the art of LCD/NCD compliance and investigation.
+            </motion.p>
           </div>
 
-          <div className="flex-1 flex flex-col justify-center py-12 relative">
-            <div className="px-6 md:px-12 xl:px-24 mb-10">
-               <h2 className="text-xs font-mono text-primary font-bold tracking-widest uppercase">Training Modules</h2>
-               <p className="text-3xl lg:text-4xl font-heading font-black text-foreground mt-2">5 Progressive Phases</p>
-            </div>
-            
-            <motion.div 
-              style={{ x }} 
-              className="flex gap-6 px-6 md:px-12 xl:px-24 w-max pointer-events-none"
+          {bestScore > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8 }}
+              className="mt-4 inline-flex items-center gap-2 px-3 py-1 rounded-md bg-white border border-warning/30 shadow-sm text-foreground font-mono text-[11px] relative z-10"
             >
-              {LEVELS.map((level, i) => (
+              <Trophy size={12} className="text-warning" />
+              RECORD: {bestScore} PTS
+            </motion.div>
+          )}
+        </div>
+      </section>
+
+      {/* SECTION 2: Fixed 100vh height with Auto Marquee */}
+      <section 
+        className="h-screen relative z-20 flex overflow-hidden bg-cover bg-center"
+        style={{ backgroundImage: `url(${section2Bg})` }}
+      >
+        {/* Subtle black overlay for cinematic medical aesthetic */}
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]" />
+        {/* Blue Side Panel (Mirroring the orange one in the screenshot) */}
+        <div className="hidden lg:flex w-24 xl:w-32 bg-primary flex-col justify-end pb-12 items-center text-white relative flex-shrink-0">
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            className="vertical-text font-heading font-black text-2xl tracking-[0.2em] whitespace-nowrap -rotate-90 origin-center mb-24"
+          >
+            INVESTIGATIONS
+          </motion.div>
+          <div className="absolute top-12 left-0 right-0 flex flex-col items-center gap-1 opacity-40">
+            <div className="w-1 h-1 bg-white rounded-full"></div>
+            <div className="w-1 h-1 bg-white rounded-full"></div>
+            <div className="w-1 h-1 bg-white rounded-full"></div>
+          </div>
+        </div>
+
+        <div className="flex-1 flex flex-col justify-center py-12 relative overflow-hidden">
+          <div className="px-6 md:px-12 xl:px-24 mb-10 relative z-10">
+            <h2 className="text-xs font-mono text-primary-foreground font-bold tracking-widest uppercase opacity-80">Training Modules</h2>
+            <p className="text-3xl lg:text-4xl font-heading font-black text-white mt-2">5 Progressive Phases</p>
+          </div>
+
+          <div className="relative overflow-hidden w-full px-6 md:px-12 xl:px-24">
+            <motion.div
+              animate={{ x: ["0%", "-50%"] }}
+              transition={{
+                duration: marqueeDuration,
+                repeat: Infinity,
+                ease: "linear"
+              }}
+              whileHover={{ animationPlayState: "paused" }}
+              className="flex gap-6 w-max"
+            >
+              {[...LEVELS, ...LEVELS].map((level, i) => (
                 <div key={i} className="flex-shrink-0 w-[320px] md:w-[450px]">
-                  <div className="bg-white rounded-3xl p-10 h-full border border-primary/5 shadow-sm relative overflow-hidden group hover:shadow-xl transition-all duration-500">
+                  <div className="bg-white/95 backdrop-blur-sm rounded-3xl p-10 h-full border border-white/20 shadow-sm relative overflow-hidden group hover:shadow-[0_0_30px_rgba(59,130,246,0.3)] hover:border-primary/30 transition-all duration-500">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full blur-2xl group-hover:bg-primary/10 transition-colors" />
-                    
-                    <div className="w-14 h-14 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-8 shadow-sm">
+
+                    <div className="w-14 h-14 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-8 shadow-sm group-hover:scale-110 transition-transform duration-500">
                       <level.icon size={26} />
                     </div>
-                    
+
                     <div className="space-y-4">
                       <div className="space-y-1">
                         <h3 className="text-[10px] font-mono font-bold text-primary uppercase tracking-[0.2em]">{level.title}</h3>
@@ -137,16 +154,14 @@ export default function StartScreen({ bestScore, onStart }: StartScreenProps) {
                       <p className="text-xs md:text-sm font-mono text-muted-foreground leading-relaxed">
                         {level.desc}
                       </p>
-                      
-                      <div className="pt-4 flex items-center gap-2 text-[10px] font-mono font-bold text-primary transition-colors">
+
+                      <div className="pt-4 flex items-center gap-2 text-[10px] font-mono font-bold text-primary transition-colors group-hover:gap-3">
                         READ BRIEFING <ChevronRight size={12} />
                       </div>
                     </div>
                   </div>
                 </div>
               ))}
-              {/* Buffer for clean exit */}
-              <div className="w-[10vw]"></div>
             </motion.div>
           </div>
         </div>
@@ -179,7 +194,7 @@ export default function StartScreen({ bestScore, onStart }: StartScreenProps) {
             <p className="text-white/70 font-mono text-sm md:text-lg mb-12 max-w-xl mx-auto leading-relaxed">
               Your shift is about to begin. Every claim you rescue saves a valid patient encounter. Are you ready, Analyst?
             </p>
-            
+
             <div className="flex flex-col sm:flex-row gap-6 mt-4">
               <motion.button
                 whileHover={{ scale: 1.05 }}
@@ -202,16 +217,16 @@ export default function StartScreen({ bestScore, onStart }: StartScreenProps) {
                 OPERATIONS MANUAL
               </button>
             </div>
-            
-            <motion.div 
-               initial={{ opacity: 0 }}
-               whileInView={{ opacity: 0.3 }}
-               transition={{ delay: 1 }}
-               className="mt-16 flex items-center gap-4 text-[10px] font-mono tracking-[0.4em] uppercase"
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 0.3 }}
+              transition={{ delay: 1 }}
+              className="mt-16 flex items-center gap-4 text-[10px] font-mono tracking-[0.4em] uppercase"
             >
-               <div className="h-px w-12 bg-white" />
-               National Medical Claims Division
-               <div className="h-px w-12 bg-white" />
+              <div className="h-px w-12 bg-white" />
+              National Medical Claims Division
+              <div className="h-px w-12 bg-white" />
             </motion.div>
           </motion.div>
         </div>

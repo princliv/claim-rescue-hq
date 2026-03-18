@@ -1,11 +1,27 @@
-import { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import GameHUD from './GameHUD';
 import InstructorFeedback from './InstructorFeedback';
 import QuestionInstructionModal from './QuestionInstructionModal';
 import { useLevelTimer } from '@/hooks/useLevelTimer';
 import { LevelResult } from '@/types/game';
-import { CheckCircle, XCircle, FileText, X, Scale, Lightbulb } from 'lucide-react';
+import section2Bg from '@/assets/bg_section2.png';
+
+// React Icons Imports
+import { 
+  MdCheckCircle, 
+  MdCancel, 
+  MdOutlineFileCopy, 
+  MdOutlineScale, 
+  MdOutlineLightbulb, 
+  MdFactCheck, 
+  MdOutlineSecurity 
+} from 'react-icons/md';
+import { 
+  BsFileMedicalFill, 
+  BsShieldLockFill, 
+  BsFillExclamationCircleFill 
+} from 'react-icons/bs';
 
 interface Props { onComplete: (result: LevelResult) => void; }
 
@@ -77,188 +93,222 @@ export default function Level1Detective({ onComplete }: Props) {
   const q = QUESTIONS[currentQ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col bg-[#0a0f18] relative overflow-hidden">
+      {/* Background with cinematic medical image */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center z-0 opacity-40 mix-blend-screen scale-110 blur-[2px]"
+        style={{ backgroundImage: `url(${section2Bg})` }}
+      />
+      <div className="absolute inset-0 bg-[#0a0f18] z-0" />
+
       <QuestionInstructionModal
         visible={showInstruction}
         type="select-one"
         onDismiss={() => setShowInstruction(false)}
         autoDismissMs={5000}
       />
+      
       <GameHUD level={1} title="Basic LCD Denial" score={score} timeLeft={timer.timeLeft} hintsLeft={2 - hintsUsed} onHint={handleHint} />
       
-      <div className={`flex-1 flex items-center justify-center p-6 relative z-10`}>
-        <div className="max-w-2xl w-full">
-          {/* Claim File Card */}
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="glass-card rounded-xl p-6 mb-6 relative overflow-hidden"
-          >
-            {isLoading ? (
-              <div className="space-y-4 animate-pulse">
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="w-4 h-4 rounded bg-primary/20" />
-                  <div className="h-4 w-48 rounded bg-secondary" />
-                  <div className="w-2 h-2 rounded-full bg-secondary ml-auto" />
-                </div>
-                <div className="grid grid-cols-2 gap-x-6 gap-y-4">
-                  {[1, 2, 3, 4, 5, 6].map(i => (
-                    <div key={i} className="flex gap-2 items-center">
-                       <div className="h-3 w-20 rounded bg-secondary" />
-                       <div className="h-4 w-24 rounded bg-primary/10" />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ) : (
-              <>
-                <div className="flex items-center gap-2 mb-4">
-                  <FileText size={16} className="text-primary" />
-                  <h3 className="text-xs font-mono text-primary uppercase tracking-widest">Claim File — Case #CR-2024-001</h3>
-                  <div className="status-dot ml-auto" />
-                </div>
-                <div className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm font-mono">
-                  <div className="flex items-center gap-2">
-                    <span className="text-muted-foreground text-xs uppercase tracking-wider">Patient:</span>
-                    <span className="text-foreground font-semibold">John D</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-muted-foreground text-xs uppercase tracking-wider">Procedure:</span>
-                    <span className="text-foreground font-semibold">Chest X-ray</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-muted-foreground text-xs uppercase tracking-wider">DX Code:</span>
-                    <span className="px-2 py-0.5 rounded-md bg-primary/10 text-primary border border-primary/20 font-bold tracking-tight">Z00.00</span>
-                    <span className="text-muted-foreground text-xs">(General exam)</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-muted-foreground text-xs uppercase tracking-wider">Denial Code:</span>
-                    <span className="px-2 py-0.5 rounded-md bg-warning/10 text-warning border border-warning/20 font-bold tracking-tight">04@</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-muted-foreground text-xs uppercase tracking-wider">LCD Applied:</span>
-                    <span className="text-foreground font-semibold">Yes</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-muted-foreground text-xs uppercase tracking-wider">Authorization:</span>
-                    <span className="px-2 py-0.5 rounded-md bg-destructive/10 text-destructive border border-destructive/20 font-bold tracking-tight shadow-sm flex items-center gap-1"><X size={12} /> Not found</span>
-                  </div>
-                </div>
-              </>
-            )}
-          </motion.div>
-
-          {/* Progress */}
-          <div className="flex gap-1.5 mb-5">
-            {QUESTIONS.map((_, i) => (
-              <div key={i} className="flex-1 relative">
-                <div className={`h-1.5 rounded-full transition-all duration-500 ${
-                  i < currentQ ? 'bg-primary box-glow' : i === currentQ ? 'bg-primary/40' : 'bg-secondary'
-                }`} />
-                {i < currentQ && (
-                  <CheckCircle size={12} className="text-primary absolute -top-1 right-0" />
-                )}
-              </div>
-            ))}
-          </div>
-
-          {/* Question */}
-          <AnimatePresence mode="wait">
+      <div className={`flex-1 flex items-center justify-center p-6 relative z-10 w-full max-w-7xl mx-auto`}>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 w-full">
+          
+          {/* Claim File - Medical Document Sidebar */}
+          <div className="lg:col-span-4 flex flex-col gap-6">
             <motion.div
-              key={currentQ}
-              initial={{ opacity: 0, x: 30, scale: 0.98 }}
-              animate={{ opacity: 1, x: 0, scale: 1 }}
-              exit={{ opacity: 0, x: -30, scale: 0.98 }}
-              transition={{ duration: 0.3 }}
-              className="glass-card rounded-xl p-6"
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="bg-white/95 backdrop-blur-md rounded-[32px] p-8 border border-white/20 shadow-2xl relative overflow-hidden flex flex-col h-full"
             >
-              <div className="flex items-center gap-2 mb-3">
-                <div className={`flex items-center gap-1.5 px-2 py-0.5 rounded text-xs font-mono font-bold ${
-                  q.isFinal ? 'bg-warning/15 text-warning border border-warning/30' : 'bg-primary/10 text-primary border border-primary/20'
-                }`}>
-                  {q.isFinal ? <><Scale size={12} /> FINAL RULING</> : `PHASE ${currentQ + 1}`}
-                </div>
-              </div>
-
-              {q.isFinal ? (
-                <div className="text-center py-4">
-                  <p className="text-xl font-heading font-bold text-foreground mb-6">{q.question}</p>
-                  <div className="flex gap-4 justify-center">
-                    {q.options.map((opt, i) => {
-                      const isSelected = selectedIdx === i;
-                      const isCorrectOpt = i === q.correct;
-                      const showCorrect = feedback && isCorrectOpt;
-                      const showWrong = feedback === 'wrong' && isSelected && !isCorrectOpt;
-                      return (
-                        <motion.button
-                          key={i}
-                          whileHover={!feedback ? { scale: 1.05 } : {}}
-                          whileTap={!feedback ? { scale: 0.95 } : {}}
-                          onClick={() => handleAnswer(i)}
-                          disabled={feedback !== null}
-                          className={`flex-1 flex flex-col items-center justify-center gap-2 p-5 rounded-xl font-mono text-base transition-all border ${
-                            showCorrect ? 'bg-success/10 border-success/50 text-success shadow-md'
-                            : showWrong ? 'bg-destructive/10 border-destructive/50 text-destructive shadow-md'
-                            : 'border-primary/20 bg-primary/5 hover:border-primary/50 hover:bg-primary/10 text-foreground'
-                          }`}
-                        >
-                          {opt}
-                        </motion.button>
-                      );
-                    })}
-                  </div>
+              {isLoading ? (
+                <div className="space-y-6 animate-pulse">
+                   <div className="h-6 w-3/4 rounded bg-slate-100" />
+                   <div className="space-y-4 pt-4">
+                     {[1, 2, 3, 4, 5, 6].map(i => <div key={i} className="h-4 w-full rounded bg-slate-50" />)}
+                   </div>
                 </div>
               ) : (
                 <>
-                  <p className="text-lg font-heading font-semibold text-foreground mb-5">{q.question}</p>
-                  <div className="space-y-2.5">
-                    {q.options.map((opt, i) => {
-                      const isSelected = selectedIdx === i;
-                      const isCorrectOpt = i === q.correct;
-                      const showCorrect = feedback && isCorrectOpt;
-                      const showWrong = feedback === 'wrong' && isSelected && !isCorrectOpt;
-                      return (
-                        <motion.button
-                          key={i}
-                          whileHover={!feedback ? { scale: 1.02, x: 4 } : {}}
-                          whileTap={!feedback ? { scale: 0.98 } : {}}
-                          onClick={() => handleAnswer(i)}
-                          disabled={feedback !== null}
-                          className={`w-full flex items-center gap-3 text-left px-5 py-3.5 rounded-xl font-mono text-sm transition-all border ${
-                            showCorrect
-                              ? 'bg-success/10 border-success/50 text-success'
-                              : showWrong
-                                ? 'bg-destructive/10 border-destructive/50 text-destructive'
-                                : 'border-border bg-secondary/30 hover:border-primary/40 hover:text-primary hover:bg-primary/5 text-foreground'
-                          }`}
-                        >
-                          <span className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0 ${
-                            showCorrect ? 'bg-success/20 text-success' : showWrong ? 'bg-destructive/20 text-destructive' : 'bg-secondary text-muted-foreground'
-                          }`}>
-                            {showCorrect ? <CheckCircle size={14} /> : showWrong ? <XCircle size={14} /> : String.fromCharCode(65 + i)}
-                          </span>
-                          {opt}
-                        </motion.button>
-                      );
-                    })}
+                  <div className="flex items-center gap-3 mb-8">
+                    <div className="w-10 h-10 rounded-2xl bg-primary/10 text-primary flex items-center justify-center">
+                      <BsFileMedicalFill size={20} />
+                    </div>
+                    <div>
+                      <h3 className="text-[10px] font-mono font-black text-primary uppercase tracking-widest leading-none mb-1">Dossier Access</h3>
+                      <span className="text-sm font-heading font-black text-slate-900 tracking-tight leading-none uppercase">Case #CR-2024-001</span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-6 flex-1">
+                    <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100">
+                      <span className="text-[9px] font-mono font-black text-slate-400 uppercase tracking-widest block mb-2">Patient Records</span>
+                      <div className="flex justify-between items-center px-1">
+                         <span className="text-xs font-mono font-bold text-slate-600">ID: John D.</span>
+                         <span className="text-[10px] font-mono text-slate-400">DOB: 05/12/82</span>
+                      </div>
+                    </div>
+
+                    <div className="space-y-4">
+                      <div className="flex flex-col gap-1 px-1">
+                         <span className="text-[9px] font-mono font-black text-slate-400 uppercase tracking-widest uppercase mb-1">Procedure Index</span>
+                         <div className="flex justify-between items-center text-xs font-mono font-bold">
+                           <span className="text-slate-600">CHEST X-RAY</span>
+                           <span className="px-2 py-0.5 rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-100">71045</span>
+                         </div>
+                      </div>
+
+                      <div className="flex flex-col gap-1 px-1">
+                         <span className="text-[9px] font-mono font-black text-slate-400 uppercase tracking-widest mb-1">Diagnosis Matrix</span>
+                         <div className="flex justify-between items-center">
+                           <span className="px-3 py-1.5 rounded-2xl bg-blue-50 text-blue-600 border-2 border-blue-100 font-mono font-black text-[13px] tracking-tighter">Z00.00</span>
+                           <span className="text-[10px] font-mono text-slate-400 font-bold uppercase">General Exam</span>
+                         </div>
+                      </div>
+
+                      <div className="flex flex-col gap-1 px-1">
+                         <span className="text-[9px] font-mono font-black text-rose-400 uppercase tracking-widest mb-1">Denial Code (FLG)</span>
+                         <div className="flex justify-between items-center">
+                           <span className="px-3 py-1.5 rounded-2xl bg-rose-50 text-rose-600 border-2 border-rose-100 font-mono font-black text-[13px] tracking-tighter animate-pulse">04@</span>
+                           <span className="text-[10px] font-mono text-rose-400 font-bold uppercase tracking-tighter">LCD Flags Detected</span>
+                         </div>
+                      </div>
+
+                      <div className="flex flex-col gap-1 px-1">
+                         <span className="text-[9px] font-mono font-black text-slate-400 uppercase tracking-widest mb-1">Authorization Link</span>
+                         <div className="flex justify-between items-center">
+                           <span className="px-3 py-1.5 rounded-2xl bg-slate-900 text-white border-2 border-slate-800 font-mono font-black text-[11px] tracking-tighter flex items-center gap-1.5">
+                             <BsShieldLockFill className="text-rose-400" /> NOT FOUND
+                           </span>
+                           <span className="text-[10px] font-mono text-slate-500 font-bold uppercase">System Lock</span>
+                         </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="pt-6 border-t border-slate-100 mt-6 flex items-center gap-2">
+                    <MdCheckCircle className="text-primary" />
+                    <span className="text-[9px] font-mono font-black text-slate-400 uppercase tracking-widest leading-none">Security Verified</span>
                   </div>
                 </>
               )}
-
-              <AnimatePresence>
-                {showHint && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="mt-4 p-3 bg-warning/10 border border-warning/30 rounded-xl text-warning text-xs font-mono flex items-center gap-2"
-                  >
-                    <Lightbulb size={14} className="flex-shrink-0" /> {showHint}
-                  </motion.div>
-                )}
-              </AnimatePresence>
             </motion.div>
-          </AnimatePresence>
+          </div>
+
+          {/* Analytical Phase - Question Area */}
+          <div className="lg:col-span-8 flex flex-col">
+            <div className="max-w-3xl w-full mx-auto">
+              {/* Progress Tracker Node-based */}
+              <div className="flex items-center gap-0 mb-12 px-12 order-1 lg:order-none">
+                {QUESTIONS.map((_, i) => {
+                   const isDone = i < currentQ;
+                   const isCurrent = i === currentQ;
+                   const isLast = i === QUESTIONS.length - 1;
+                   return (
+                     <div key={i} className={`flex-1 flex items-center ${isLast ? 'flex-none' : ''}`}>
+                        <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-xs font-black transition-all duration-500 border-2 z-10 ${
+                          isDone ? 'bg-primary border-primary text-white shadow-lg shadow-primary/20 scale-110' : isCurrent ? 'bg-white border-primary text-primary shadow-lg shadow-primary/20' : 'bg-slate-800 border-slate-700 text-slate-500'
+                        }`}>
+                          {isDone ? <MdCheckCircle size={16} /> : i + 1}
+                        </div>
+                        {!isLast && (
+                           <div className="flex-1 h-1 mx-[-2px] relative">
+                             <div className="absolute inset-0 bg-slate-800 rounded-full" />
+                             {isDone && <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} className="absolute inset-0 origin-left bg-primary rounded-full shadow-[0_0_10px_rgba(59,130,246,0.5)]" />}
+                           </div>
+                        )}
+                     </div>
+                   )
+                })}
+              </div>
+
+              {/* Question Card */}
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentQ}
+                  initial={{ opacity: 0, y: 30, scale: 0.98 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -30, scale: 0.98 }}
+                  transition={{ duration: 0.4, type: "spring", stiffness: 300, damping: 20 }}
+                  className="bg-slate-900/40 backdrop-blur-xl rounded-[40px] p-8 md:p-12 border border-white/10 shadow-[0_40px_100px_rgba(0,0,0,0.3)] relative overflow-hidden"
+                >
+                  {/* Decorative Elements */}
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-bl-full blur-3xl" />
+                  <div className="absolute bottom-0 left-0 w-32 h-32 bg-primary/5 rounded-tr-full blur-2xl" />
+
+                  <div className="relative z-10">
+                    <div className="flex items-center gap-3 mb-8">
+                      <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-[9px] font-mono font-black tracking-widest uppercase border ${
+                        q.isFinal ? 'bg-amber-950/40 text-amber-500 border-amber-500/30' : 'bg-primary/20 text-primary border-primary/30'
+                      }`}>
+                        {q.isFinal ? <><MdOutlineScale size={14} /> Final Settlement Phase</> : <><MdFactCheck size={14} /> Analysis Point 0{currentQ + 1}</>}
+                      </div>
+                    </div>
+
+                    <h2 className="text-3xl md:text-5xl font-heading font-black text-white tracking-tighter leading-none mb-10 max-w-2xl">
+                      {q.question}
+                    </h2>
+
+                    <div className={`grid gap-4 ${q.isFinal ? 'grid-cols-2' : 'grid-cols-1'}`}>
+                      {q.options.map((opt, i) => {
+                        const isSelected = selectedIdx === i;
+                        const isCorrectOpt = i === q.correct;
+                        const showCorrect = feedback && isCorrectOpt;
+                        const showWrong = feedback === 'wrong' && isSelected && !isCorrectOpt;
+                        
+                        return (
+                          <motion.button
+                            key={i}
+                            whileHover={!feedback ? { scale: 1.02, x: q.isFinal ? 0 : 8 } : {}}
+                            whileTap={!feedback ? { scale: 0.98 } : {}}
+                            onClick={() => handleAnswer(i)}
+                            disabled={feedback !== null}
+                            className={`w-full flex items-center justify-between text-left px-8 py-5 rounded-3xl font-mono text-sm transition-all border-2 relative overflow-hidden ${
+                              showCorrect
+                                ? 'bg-emerald-500/20 border-emerald-500 text-emerald-400 shadow-[0_0_30px_rgba(16,185,129,0.2)]'
+                                : showWrong
+                                  ? 'bg-rose-500/20 border-rose-500 text-rose-400 shadow-[0_0_30px_rgba(244,63,94,0.2)]'
+                                  : 'bg-white/5 border-white/5 hover:border-white/20 hover:bg-white/10 text-slate-300'
+                            }`}
+                          >
+                            <div className="flex items-center gap-4 relative z-10">
+                              <span className={`w-10 h-10 rounded-2xl flex items-center justify-center text-xs font-black transition-all ${
+                                showCorrect ? 'bg-emerald-500 text-white' : showWrong ? 'bg-rose-500 text-white' : 'bg-white/10 text-white'
+                              }`}>
+                                {showCorrect ? <MdCheckCircle size={20} /> : showWrong ? <MdCancel size={20} /> : String.fromCharCode(65 + i)}
+                              </span>
+                              <span className={`font-bold ${showCorrect ? 'text-emerald-400' : showWrong ? 'text-rose-400' : ''}`}>{opt}</span>
+                            </div>
+                            
+                            {/* Scanning effect on hover */}
+                            {!feedback && (
+                              <div className="absolute top-0 right-0 h-full w-1/3 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity translate-x-full group-hover:translate-x-0" />
+                            )}
+                          </motion.button>
+                        );
+                      })}
+                    </div>
+
+                    <AnimatePresence>
+                      {showHint && (
+                        <motion.div
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: 10 }}
+                          className="mt-8 p-6 bg-amber-500/10 border-2 border-amber-900/30 rounded-3xl text-amber-500 text-[11px] font-mono flex items-start gap-4"
+                        >
+                          <BsFillExclamationCircleFill size={18} className="flex-shrink-0 mt-0.5" />
+                          <div className="space-y-1">
+                            <span className="font-black uppercase tracking-widest text-[9px] block">Decryption Hint</span>
+                            <span className="opacity-90 leading-relaxed font-bold">{showHint}</span>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          </div>
         </div>
       </div>
 

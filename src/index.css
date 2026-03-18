@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -28,12 +28,16 @@
     --input: 220 13% 91%;
     --ring: 221 83% 53%;
     --radius: 0.5rem;
-    --font-heading: 'Inter', sans-serif;
+    --font-heading: 'Roboto', sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
     --glow-primary: none;
     --glow-danger: none;
     --glow-warning: none;
     --glow-success: none;
+    --glow-blue: none;
+    --glow-amber: none;
+    --glow-emerald: none;
+    --glow-rose: none;
   }
 }
 
@@ -43,8 +47,7 @@
   }
   body {
     @apply text-foreground;
-    background: radial-gradient(circle at top right, hsl(var(--secondary) / 0.8), hsl(var(--background))), 
-                hsl(var(--background));
+    background: hsl(var(--background));
     min-height: 100vh;
     font-family: var(--font-heading);
     -webkit-font-smoothing: antialiased;
@@ -112,6 +115,14 @@
 
   /* Data stream — disabled */
   .data-stream::before { display: none; }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }
 
 @keyframes shake {

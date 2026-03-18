@@ -8,7 +8,7 @@ export interface LevelResult {
 }
 
 export interface GameState {
-  currentScreen: 'start' | 'levelSelect' | 'gameplay' | 'levelResults' | 'finalDashboard';
+  currentScreen: 'start' | 'roleBriefing' | 'levelSelect' | 'gameplay' | 'levelResults' | 'finalDashboard';
   currentLevel: number;
   unlockedLevels: number[];
   levelResults: LevelResult[];

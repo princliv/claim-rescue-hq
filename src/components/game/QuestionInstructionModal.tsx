@@ -1,6 +1,22 @@
+import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useEffect, useState } from 'react';
-import { CheckCircle, MousePointer2, Eye, Search, Hand, FileText } from 'lucide-react';
+
+// React Icons Imports
+import { 
+  MdCheckCircle, 
+  MdTouchApp, 
+  MdVisibility, 
+  MdSearch, 
+  MdFingerprint, 
+  MdOutlineFileCopy, 
+  MdInfoOutline,
+  MdCompare 
+} from 'react-icons/md';
+import { 
+  BsGrid3X3GapFill, 
+  BsCursorFill, 
+  BsHandIndexThumbFill 
+} from 'react-icons/bs';
 
 export type InstructionType = 'select-one' | 'drag-right' | 'tap-tabs' | 'compare-select';
 
@@ -19,31 +35,31 @@ const CONFIGS: Record<InstructionType, {
   gesture: React.ReactNode;
 }> = {
   'select-one': {
-    icon: <MousePointer2 size={40} className="text-muted-foreground mx-auto" />,
-    title: 'Select One Answer',
-    subtitle: 'Read the question carefully, then tap the best choice.',
-    steps: ['Read the claim scenario above', 'Review each option', 'Tap the correct answer'],
+    icon: <MdFingerprint size={48} className="text-primary/40 mx-auto" />,
+    title: 'Precision Selection',
+    subtitle: 'Evaluate the dossier, then choose the optimal analytic path.',
+    steps: ['Scan the medical record above', 'Synthesize all available data nodes', 'Commit your final decision'],
     gesture: <SelectOneGesture />,
   },
   'drag-right': {
-    icon: <Hand size={40} className="text-muted-foreground mx-auto" />,
-    title: 'Pick the Right Card',
-    subtitle: 'Select the evidence card that supports your decision.',
-    steps: ['Review the claim details', 'Tap the card that applies', 'Confirm your final ruling'],
+    icon: <BsGrid3X3GapFill size={44} className="text-primary/40 mx-auto" />,
+    title: 'Evidence Categorization',
+    subtitle: 'Group critical data points into their respective analytic zones.',
+    steps: ['Extract a card from the data pool', 'Deploy it into the correct status zone', 'Complete all classifications to proceed'],
     gesture: <DragGesture />,
   },
   'tap-tabs': {
-    icon: <MousePointer2 size={40} className="text-muted-foreground mx-auto" />,
-    title: 'Explore Each Tab First',
-    subtitle: 'Open all system tabs, then answer the questions.',
-    steps: ['Click each tab to reveal data', 'All 4 tabs must be visited', 'Then answer each question'],
+    icon: <MdTouchApp size={48} className="text-primary/40 mx-auto" />,
+    title: 'Multi-System Synchronization',
+    subtitle: 'Access and extract data from all network sub-layers.',
+    steps: ['Authenticate into each system tab', 'Visually verify all 4 data streams', 'The analytical mode will unlock upon completion'],
     gesture: <TabGesture />,
   },
   'compare-select': {
-    icon: <Search size={40} className="text-muted-foreground mx-auto" />,
-    title: 'Compare & Decide',
-    subtitle: 'Examine both documents side-by-side, then choose.',
-    steps: ['Read left panel (Claim)', 'Read right panel (Auth)', 'Spot the mismatch & answer'],
+    icon: <MdCompare size={48} className="text-primary/40 mx-auto" />,
+    title: 'Cross-Match Validation',
+    subtitle: 'Execute high-fidelity comparison between separate data sources.',
+    steps: ['Examine the host claim (Left)', 'Examine the system authorization (Right)', 'Identify mismatch anomalies for judgment'],
     gesture: <CompareGesture />,
   },
 };
@@ -52,34 +68,31 @@ const CONFIGS: Record<InstructionType, {
 
 function SelectOneGesture() {
   return (
-    <div className="relative w-48 h-28 mx-auto">
-      {/* Answer options */}
-      {['Option A', 'Option B', 'Option C'].map((label, i) => (
+    <div className="relative w-48 h-32 mx-auto flex flex-col justify-center gap-2">
+      {[1, 2, 3].map((i) => (
         <motion.div
-          key={label}
+          key={i}
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2 + i * 0.1 }}
-          className={`absolute left-0 right-8 h-7 rounded-lg border text-xs font-mono flex items-center px-3 ${
-            i === 1
-              ? 'border-primary bg-primary/10 text-primary font-bold'
-              : 'border-border bg-secondary/40 text-muted-foreground'
+          className={`h-7 rounded-xl border-2 text-[9px] font-mono font-black flex items-center px-4 transition-all ${
+            i === 2
+              ? 'border-primary bg-primary/10 text-primary shadow-lg shadow-primary/10'
+              : 'border-slate-200/50 bg-white/40 text-slate-300'
           }`}
-          style={{ top: i * 34 }}
         >
-          {label}
-          {i === 1 && <CheckCircle size={12} className="ml-auto text-primary" />}
+          {i === 2 ? 'CORRECT_DECISION_01' : `NEUTRAL_PATH_0${i}`}
+          {i === 2 && <MdCheckCircle size={12} className="ml-auto text-primary" />}
         </motion.div>
       ))}
-      {/* Animated finger */}
       <motion.div
-        className="absolute right-0 text-muted-foreground select-none"
+        className="absolute right-0 text-primary select-none drop-shadow-lg"
         initial={{ y: 0, x: 0 }}
-        animate={{ y: [0, 34, 34, 0], x: [0, 0, -4, 0] }}
+        animate={{ y: [0, 9, 9, 0], x: [0, 4, -4, 0] }}
         transition={{ duration: 2, repeat: Infinity, repeatDelay: 0.8, ease: 'easeInOut' }}
-        style={{ top: 8, right: 10 }}
+        style={{ top: 40, right: 8 }}
       >
-        <MousePointer2 size={24} className="fill-muted-foreground/30" />
+        <BsCursorFill size={20} className="fill-primary" />
       </motion.div>
     </div>
   );
@@ -89,43 +102,33 @@ function DragGesture() {
   return (
     <div className="relative w-48 h-28 mx-auto flex items-center justify-center">
       <div className="flex items-center gap-4">
-        {/* Card */}
         <motion.div
-          className="w-20 h-16 rounded-xl border-2 border-primary bg-primary/5 flex flex-col items-center justify-center gap-1"
-          animate={{ x: [0, 6, 0] }}
+          className="w-16 h-12 rounded-2xl border-2 border-primary bg-primary/10 flex flex-col items-center justify-center gap-1 shadow-lg shadow-primary/10"
+          animate={{ x: [0, 8, 0] }}
           transition={{ duration: 1.8, repeat: Infinity, repeatDelay: 0.5, ease: 'easeInOut' }}
         >
-          <FileText size={20} className="text-primary" />
-          <span className="text-[10px] font-mono text-primary font-bold">CARD</span>
+          <MdOutlineFileCopy size={16} className="text-primary" />
+          <span className="text-[8px] font-mono font-black text-primary uppercase">Data</span>
         </motion.div>
-        {/* Arrow */}
-        <motion.div
-          className="text-primary font-bold text-xl"
-          animate={{ x: [0, 4, 0], opacity: [1, 0.4, 1] }}
-          transition={{ duration: 1.8, repeat: Infinity, repeatDelay: 0.5 }}
-        >
-          →
-        </motion.div>
-        {/* Target zone */}
-        <div className="w-16 h-16 rounded-xl border-2 border-dashed border-primary/30 flex items-center justify-center">
-          <span className="text-[10px] font-mono text-muted-foreground text-center">DROP<br/>ZONE</span>
+        <motion.div className="text-primary/40 font-black text-xs animate-pulse">→</motion.div>
+        <div className="w-14 h-14 rounded-2xl border-2 border-dashed border-slate-300/50 flex items-center justify-center">
+          <span className="text-[7px] font-mono font-black text-slate-300 text-center uppercase tracking-tight">Zone<br/>Alpha</span>
         </div>
       </div>
-      {/* Finger */}
       <motion.div
-        className="absolute text-muted-foreground select-none"
-        style={{ bottom: 8, left: 32 }}
-        animate={{ x: [0, 48, 48, 0], opacity: [1, 1, 0, 0] }}
+        className="absolute text-slate-400 select-none drop-shadow-xl"
+        style={{ bottom: 4, left: 24 }}
+        animate={{ x: [0, 50, 50, 0], opacity: [0, 1, 1, 0] }}
         transition={{ duration: 2, repeat: Infinity, repeatDelay: 0.6, ease: 'easeInOut' }}
       >
-        <MousePointer2 size={24} className="fill-muted-foreground/30 -rotate-12" />
+        <BsHandIndexThumbFill size={28} className="fill-slate-400/80" />
       </motion.div>
     </div>
   );
 }
 
 function TabGesture() {
-  const tabs = ['📋 Claim', '🏥 Auth', '💊 Rx', '📁 Hist'];
+  const tabs = ['MHI', 'CAS', 'CGX'];
   const [active, setActive] = useState(0);
 
   useEffect(() => {
@@ -134,36 +137,30 @@ function TabGesture() {
   }, []);
 
   return (
-    <div className="relative w-52 h-28 mx-auto">
-      {/* Tabs */}
-      <div className="flex gap-1 mb-1">
+    <div className="relative w-52 h-28 mx-auto flex flex-col justify-center">
+      <div className="flex gap-1.5 mb-1 h-6">
         {tabs.map((tab, i) => (
           <motion.div
             key={tab}
-            animate={{ borderColor: i === active ? 'hsl(221 83% 53%)' : 'hsl(220 13% 91%)' }}
-            className="flex-1 h-7 rounded-t-lg border text-[9px] font-mono flex items-center justify-center transition-colors"
-            style={{
-              background: i === active ? 'hsl(221 83% 53% / 0.08)' : 'hsl(220 14% 96%)',
-              color: i === active ? 'hsl(221 83% 53%)' : 'hsl(220 9% 46%)',
-              fontWeight: i === active ? 700 : 400,
-            }}
+            animate={{ borderColor: i === active ? 'rgba(37,99,235,0.4)' : 'rgba(148,163,184,0.1)' }}
+            className={`flex-1 rounded-t-xl border-t-2 border-x-2 text-[8px] font-mono font-black flex items-center justify-center transition-all ${
+                i === active ? 'bg-primary/5 text-primary' : 'bg-slate-50 text-slate-300'
+            }`}
           >
-            {tab.split(' ')[0]}
+            {tab}
           </motion.div>
         ))}
       </div>
-      {/* Content area */}
-      <div className="h-12 rounded-b-lg rounded-tr-lg border bg-white flex items-center justify-center">
-        <span className="text-[10px] font-mono text-muted-foreground">{tabs[active]} data…</span>
+      <div className="h-10 rounded-b-xl rounded-tr-xl border-2 border-slate-100 bg-white flex items-center justify-center shadow-sm">
+        <span className="text-[8px] font-mono font-black text-slate-400 uppercase tracking-widest">{tabs[active]} LIVE FEED...</span>
       </div>
-      {/* Bouncing finger */}
       <motion.div
-        className="absolute text-muted-foreground select-none"
-        style={{ bottom: 2, left: active * 50 + 12 }}
-        animate={{ bottom: [2, 14, 2] }}
-        transition={{ duration: 0.45, repeat: Infinity }}
+        className="absolute text-primary select-none drop-shadow-lg"
+        style={{ bottom: 0, left: active * 55 + 16 }}
+        animate={{ y: [0, -15, 0] }}
+        transition={{ duration: 0.45, repeat: Infinity, repeatDelay: 0.45 }}
       >
-        <MousePointer2 size={20} className="fill-muted-foreground/30" />
+        <BsCursorFill size={18} className="fill-primary" />
       </motion.div>
     </div>
   );
@@ -171,41 +168,30 @@ function TabGesture() {
 
 function CompareGesture() {
   return (
-    <div className="relative w-52 h-28 mx-auto flex items-center gap-3">
-      {/* Left doc */}
-      <div className="flex-1 h-20 rounded-lg border border-primary/30 bg-primary/5 p-2">
-        <div className="text-[9px] font-mono text-primary font-bold mb-1">📋 CLAIM</div>
-        {[70, 50, 85].map((w, i) => (
-          <div key={i} className="h-1.5 rounded-full bg-primary/20 mb-1" style={{ width: `${w}%` }} />
-        ))}
+    <div className="relative w-52 h-28 mx-auto flex items-center gap-4">
+      <div className="flex-1 h-14 rounded-2xl border-2 border-primary/20 bg-primary/5 p-2 overflow-hidden">
+        <div className="text-[7px] font-mono font-black text-primary/40 mb-1 uppercase tracking-tighter">Target_Claim</div>
+        <div className="h-1 rounded-full bg-primary/10 w-full mb-1" />
         <motion.div
-          className="h-1.5 rounded-full bg-destructive/60 mb-1"
-          animate={{ opacity: [1, 0.3, 1] }}
+          className="h-1.5 rounded-full bg-rose-500/50 w-3/4 mb-1"
+          animate={{ opacity: [1, 0.4, 1] }}
           transition={{ duration: 1.2, repeat: Infinity }}
-          style={{ width: '60%' }}
         />
       </div>
-
-      {/* Eyes / compare icon */}
       <motion.div
-        className="text-muted-foreground"
-        animate={{ x: [-4, 4, -4] }}
+        className="text-primary/20"
+        animate={{ scale: [1, 1.2, 1] }}
         transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
       >
-        <Eye size={24} />
+        <MdVisibility size={20} />
       </motion.div>
-
-      {/* Right doc */}
-      <div className="flex-1 h-20 rounded-lg border border-success/30 bg-success/5 p-2">
-        <div className="text-[9px] font-mono text-success font-bold mb-1">🔐 AUTH</div>
-        {[70, 50, 85].map((w, i) => (
-          <div key={i} className="h-1.5 rounded-full bg-success/20 mb-1" style={{ width: `${w}%` }} />
-        ))}
+      <div className="flex-1 h-14 rounded-2xl border-2 border-emerald-200 bg-emerald-50 p-2 overflow-hidden">
+        <div className="text-[7px] font-mono font-black text-emerald-400 mb-1 uppercase tracking-tighter">Auth_Source</div>
+        <div className="h-1 rounded-full bg-emerald-500/10 w-full mb-1" />
         <motion.div
-          className="h-1.5 rounded-full bg-success/60 mb-1"
-          animate={{ opacity: [1, 0.3, 1] }}
+          className="h-1.5 rounded-full bg-emerald-500 w-1/2 mb-1"
+          animate={{ opacity: [1, 0.4, 1] }}
           transition={{ duration: 1.2, repeat: Infinity, delay: 0.3 }}
-          style={{ width: '90%' }}
         />
       </div>
     </div>
@@ -217,7 +203,6 @@ function CompareGesture() {
 export default function QuestionInstructionModal({ visible, type, onDismiss, autoDismissMs = 6000 }: Props) {
   const config = CONFIGS[type];
 
-  // Auto-dismiss after N ms
   useEffect(() => {
     if (!visible) return;
     const t = setTimeout(onDismiss, autoDismissMs);
@@ -231,80 +216,87 @@ export default function QuestionInstructionModal({ visible, type, onDismiss, aut
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/25 backdrop-blur-sm p-4"
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-[#0a0f18]/40 backdrop-blur-md p-6"
           onClick={onDismiss}
         >
           <motion.div
-            initial={{ scale: 0.88, opacity: 0, y: 24 }}
+            initial={{ scale: 0.9, opacity: 0, y: 30 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.92, opacity: 0, y: 16 }}
-            transition={{ type: 'spring', stiffness: 220, damping: 22 }}
+            exit={{ scale: 0.92, opacity: 0, y: 20 }}
+            transition={{ type: 'spring', stiffness: 220, damping: 25 }}
             onClick={e => e.stopPropagation()}
-            className="bg-white border rounded-2xl shadow-xl max-w-sm w-full overflow-hidden"
+            className="bg-white/95 backdrop-blur-3xl border-2 border-white/20 rounded-[48px] shadow-[0_50px_100px_rgba(0,0,0,0.2)] max-w-2xl w-full overflow-hidden relative"
           >
-            {/* Top accent bar */}
-            <div className="h-1 bg-primary w-full" />
+            {/* Top Indicator */}
+            <div className="h-2 bg-primary w-full shadow-[0_4px_10px_rgba(37,99,235,0.3)]" />
 
-            <div className="p-6">
-              {/* Header */}
-              <div className="text-center mb-5">
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ type: 'spring', stiffness: 260, delay: 0.1 }}
-                  className="mb-3"
-                >
-                  {config.icon}
-                </motion.div>
-                <h2 className="text-lg font-heading font-bold text-foreground">{config.title}</h2>
-                <p className="text-xs font-mono text-muted-foreground mt-1">{config.subtitle}</p>
-              </div>
-
-              {/* Gesture animation */}
-              <div className="bg-secondary/30 rounded-xl p-4 mb-5 border">
-                {config.gesture}
-              </div>
-
-              {/* Steps */}
-              <div className="space-y-2 mb-5">
-                {config.steps.map((step, i) => (
+            <div className="p-8 md:p-10 flex flex-col md:flex-row gap-10">
+              {/* Left Side: Header and Gesture (Standing Out) */}
+              <div className="flex-1 flex flex-col">
+                <div className="text-center md:text-left mb-8">
                   <motion.div
-                    key={step}
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.2 + i * 0.1 }}
-                    className="flex items-center gap-3 text-xs font-mono text-foreground"
+                    initial={{ scale: 0, rotate: -20 }}
+                    animate={{ scale: 1, rotate: 0 }}
+                    transition={{ type: 'spring', stiffness: 260, delay: 0.1 }}
+                    className="mb-4 md:mx-0 mx-auto w-fit"
                   >
-                    <span className="w-5 h-5 rounded-full bg-primary/10 text-primary font-bold flex items-center justify-center flex-shrink-0 text-[10px]">
-                      {i + 1}
-                    </span>
-                    {step}
+                    {config.icon}
                   </motion.div>
-                ))}
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary font-mono text-[9px] font-black tracking-widest uppercase mb-3">
+                    <MdInfoOutline size={12} /> Analytical Directive
+                  </div>
+                  <h2 className="text-2xl md:text-3xl font-heading font-black text-slate-900 tracking-tight leading-none mb-2">{config.title}</h2>
+                  <p className="text-[11px] font-mono font-bold text-slate-400 italic tracking-tight">{config.subtitle}</p>
+                </div>
+
+                <div className="bg-slate-50/50 rounded-[32px] p-6 border-2 border-slate-100/50 shadow-inner flex-1 flex items-center justify-center">
+                  {config.gesture}
+                </div>
               </div>
 
-              {/* Dismiss button + auto-dismiss bar */}
-              <div className="relative">
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={onDismiss}
-                  className="w-full py-3 bg-primary text-primary-foreground rounded-lg font-heading font-semibold text-sm"
-                >
-                  Got it — Start Questions
-                </motion.button>
-                {/* Progress bar showing auto-dismiss */}
-                <motion.div
-                  className="absolute bottom-0 left-0 h-full bg-white/20 rounded-lg pointer-events-none"
-                  initial={{ width: '100%' }}
-                  animate={{ width: '0%' }}
-                  transition={{ duration: autoDismissMs / 1000, ease: 'linear' }}
-                />
-              </div>
+              {/* Right Side: Steps and Actions (Compact) */}
+              <div className="flex-1 flex flex-col justify-between">
+                <div className="space-y-4 mb-8">
+                  <h3 className="text-[10px] font-mono font-black text-slate-400 uppercase tracking-widest mb-2 px-1">Engagement Protocol:</h3>
+                  {config.steps.map((step, i) => (
+                    <motion.div
+                      key={step}
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.3 + i * 0.1 }}
+                      className="flex items-start gap-4 text-[11px] font-mono text-slate-600 font-bold leading-tight bg-white/50 p-3 rounded-2xl border border-white"
+                    >
+                      <span className="w-6 h-6 rounded-lg bg-slate-900 text-white font-black flex items-center justify-center flex-shrink-0 text-[10px] shadow-lg shadow-slate-900/10">
+                        {i + 1}
+                      </span>
+                      <span className="pt-0.5">{step}</span>
+                    </motion.div>
+                  ))}
+                </div>
 
-              <p className="text-center text-[10px] font-mono text-muted-foreground mt-2">
-                Auto-continues in {autoDismissMs / 1000}s · Tap anywhere to skip
-              </p>
+                <div className="relative group">
+                  <motion.button
+                    whileHover={{ y: -5, scale: 1.01 }}
+                    whileTap={{ scale: 0.99 }}
+                    onClick={onDismiss}
+                    className="w-full py-5 bg-primary text-white rounded-[24px] font-mono font-black text-xs uppercase tracking-widest shadow-xl shadow-primary/20 hover:bg-blue-600 transition-all z-10 relative"
+                  >
+                    Acknowledge & Sync
+                  </motion.button>
+                  <div className="absolute inset-0 rounded-[24px] pointer-events-none overflow-hidden">
+                    <motion.div
+                      className="h-full bg-white/20"
+                      initial={{ width: '100%' }}
+                      animate={{ width: '0%' }}
+                      transition={{ duration: autoDismissMs / 1000, ease: 'linear' }}
+                    />
+                  </div>
+                </div>
+
+                <p className="text-center text-[10px] font-mono font-black text-slate-400 mt-4 uppercase tracking-widest opacity-50">
+                  Link active in {autoDismissMs / 1000}s
+                </p>
+              </div>
             </div>
           </motion.div>
         </motion.div>
