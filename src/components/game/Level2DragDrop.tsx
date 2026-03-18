@@ -296,12 +296,12 @@ export default function Level2DragDrop({ onComplete }: Props) {
             <motion.div 
               initial={{ opacity: 0, scale: 0.9, y: 20 }} 
               animate={{ opacity: 1, scale: 1, y: 0 }} 
-              className="max-w-xl w-full bg-slate-900/60 backdrop-blur-2xl rounded-[48px] p-12 text-center border border-white/10 shadow-[0_50px_100px_rgba(0,0,0,0.4)]"
+              className="max-w-xl w-full bg-slate-900/60 backdrop-blur-2xl rounded-[48px] p-8 md:p-10 text-center border border-white/10 shadow-[0_50px_100px_rgba(0,0,0,0.4)]"
             >
-              <div className="flex items-center justify-center gap-2 px-4 py-2 rounded-2xl bg-amber-500/10 text-amber-500 border border-amber-500/30 text-[10px] font-mono font-black tracking-widest uppercase mb-8 mx-auto w-fit">
+              <div className="flex items-center justify-center gap-2 px-4 py-2 rounded-2xl bg-amber-500/10 text-amber-500 border border-amber-500/30 text-[10px] font-mono font-black tracking-widest uppercase mb-6 mx-auto w-fit">
                 <MdOutlineScale size={16} /> FINAL RULING REQUIRED
               </div>
-              <h2 className="text-3xl md:text-5xl font-heading font-black text-white tracking-tighter leading-none mb-10 max-w-2xl">Complete Your Investigation</h2>
+              <h2 className="text-2xl md:text-4xl font-heading font-black text-white tracking-tighter leading-none mb-8 max-w-2xl">Complete Your Investigation</h2>
               <p className="text-slate-400 text-sm font-mono mb-12 capitalize leading-relaxed px-4">
                 Synthesize all evidence gathered from the NCD case file and provide your final policy judgment.
               </p>

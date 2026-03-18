@@ -229,14 +229,14 @@ export default function Level1Detective({ onComplete }: Props) {
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: -30, scale: 0.98 }}
                   transition={{ duration: 0.4, type: "spring", stiffness: 300, damping: 20 }}
-                  className="bg-slate-900/40 backdrop-blur-xl rounded-[40px] p-8 md:p-12 border border-white/10 shadow-[0_40px_100px_rgba(0,0,0,0.3)] relative overflow-hidden"
+                  className="bg-slate-900/40 backdrop-blur-xl rounded-[40px] p-6 md:p-10 border border-white/10 shadow-[0_40px_100px_rgba(0,0,0,0.3)] relative overflow-hidden"
                 >
                   {/* Decorative Elements */}
                   <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-bl-full blur-3xl" />
                   <div className="absolute bottom-0 left-0 w-32 h-32 bg-primary/5 rounded-tr-full blur-2xl" />
 
                   <div className="relative z-10">
-                    <div className="flex items-center gap-3 mb-8">
+                    <div className="flex items-center gap-3 mb-6">
                       <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-[9px] font-mono font-black tracking-widest uppercase border ${
                         q.isFinal ? 'bg-amber-950/40 text-amber-500 border-amber-500/30' : 'bg-primary/20 text-primary border-primary/30'
                       }`}>
@@ -244,7 +244,7 @@ export default function Level1Detective({ onComplete }: Props) {
                       </div>
                     </div>
 
-                    <h2 className="text-3xl md:text-5xl font-heading font-black text-white tracking-tighter leading-none mb-10 max-w-2xl">
+                    <h2 className="text-2xl md:text-4xl font-heading font-black text-white tracking-tighter leading-none mb-8 max-w-2xl">
                       {q.question}
                     </h2>
 
