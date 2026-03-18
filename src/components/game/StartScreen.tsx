@@ -97,14 +97,15 @@ export default function StartScreen({ bestScore, onStart }: StartScreenProps) {
         </div>
       </section>
 
-      {/* SECTION 2: Fixed 100vh height with Auto Marquee */}
+      {/* SECTION 2: Fixed height with Auto Marquee and Top-Right Action */}
       <section 
-        className="h-screen relative z-20 flex overflow-hidden bg-cover bg-center"
+        className="flex-1 min-h-[500px] lg:h-[calc(100vh-180px)] relative z-20 flex overflow-hidden bg-cover bg-center"
         style={{ backgroundImage: `url(${section2Bg})` }}
       >
         {/* Subtle black overlay for cinematic medical aesthetic */}
         <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]" />
-        {/* Blue Side Panel (Mirroring the orange one in the screenshot) */}
+        
+        {/* Blue Side Panel */}
         <div className="hidden lg:flex w-24 xl:w-32 bg-primary flex-col justify-end pb-12 items-center text-white relative flex-shrink-0">
           <motion.div
             initial={{ opacity: 0 }}
@@ -121,6 +122,28 @@ export default function StartScreen({ bestScore, onStart }: StartScreenProps) {
         </div>
 
         <div className="flex-1 flex flex-col justify-center py-12 relative overflow-hidden">
+          {/* Top Right Start Button - Repositioned as requested */}
+          <div className="absolute top-10 right-10 lg:right-16 z-30 flex items-center gap-4">
+            <button
+              onClick={() => setShowHelp(true)}
+              className="hidden sm:flex items-center justify-center gap-2 px-6 py-3 rounded-xl border border-white/20 text-white font-heading font-bold hover:bg-white/10 transition-all text-xs uppercase tracking-widest"
+            >
+              <BookOpen size={16} />
+              Manual
+            </button>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={onStart}
+              className="group relative px-10 py-4 bg-white text-primary font-heading font-black text-lg rounded-xl shadow-2xl hover:shadow-white/20 transition-all overflow-hidden"
+            >
+              <span className="relative z-10 flex items-center gap-2">
+                INITIALIZE SHIFT
+                <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
+              </span>
+            </motion.button>
+          </div>
+
           <div className="px-6 md:px-12 xl:px-24 mb-10 relative z-10">
             <h2 className="text-xs font-mono text-primary-foreground font-bold tracking-widest uppercase opacity-80">Training Modules</h2>
             <p className="text-3xl lg:text-4xl font-heading font-black text-white mt-2">5 Progressive Phases</p>
@@ -138,25 +161,25 @@ export default function StartScreen({ bestScore, onStart }: StartScreenProps) {
               className="flex gap-6 w-max"
             >
               {[...LEVELS, ...LEVELS].map((level, i) => (
-                <div key={i} className="flex-shrink-0 w-[320px] md:w-[450px]">
-                  <div className="bg-white/95 backdrop-blur-sm rounded-3xl p-10 h-full border border-white/20 shadow-sm relative overflow-hidden group hover:shadow-[0_0_30px_rgba(59,130,246,0.3)] hover:border-primary/30 transition-all duration-500">
+                <div key={i} className="flex-shrink-0 w-[300px] md:w-[400px]">
+                  <div className="bg-white/95 backdrop-blur-sm rounded-[32px] p-8 md:p-10 h-full border border-white/20 shadow-sm relative overflow-hidden group hover:shadow-[0_0_30px_rgba(59,130,246,0.3)] hover:border-primary/30 transition-all duration-500">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full blur-2xl group-hover:bg-primary/10 transition-colors" />
 
-                    <div className="w-14 h-14 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-8 shadow-sm group-hover:scale-110 transition-transform duration-500">
-                      <level.icon size={26} />
+                    <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-6 shadow-sm group-hover:scale-110 transition-transform duration-500">
+                      <level.icon size={22} />
                     </div>
 
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                       <div className="space-y-1">
-                        <h3 className="text-[10px] font-mono font-bold text-primary uppercase tracking-[0.2em]">{level.title}</h3>
-                        <h4 className="text-2xl md:text-3xl font-heading font-black text-foreground leading-tight">{level.name}</h4>
+                        <h3 className="text-[9px] font-mono font-bold text-primary uppercase tracking-[0.2em]">{level.title}</h3>
+                        <h4 className="text-xl md:text-2xl font-heading font-black text-foreground leading-tight">{level.name}</h4>
                       </div>
-                      <p className="text-xs md:text-sm font-mono text-muted-foreground leading-relaxed">
+                      <p className="text-[11px] md:text-xs font-mono text-muted-foreground leading-relaxed">
                         {level.desc}
                       </p>
 
-                      <div className="pt-4 flex items-center gap-2 text-[10px] font-mono font-bold text-primary transition-colors group-hover:gap-3">
-                        READ BRIEFING <ChevronRight size={12} />
+                      <div className="pt-2 flex items-center gap-2 text-[9px] font-mono font-bold text-primary transition-colors group-hover:gap-3">
+                        READ BRIEFING <ChevronRight size={10} />
                       </div>
                     </div>
                   </div>
@@ -164,71 +187,6 @@ export default function StartScreen({ bestScore, onStart }: StartScreenProps) {
               ))}
             </motion.div>
           </div>
-        </div>
-      </section>
-
-      {/* SECTION 3: High-Impact Blue Start Section */}
-      <section className="min-h-screen flex items-center justify-center relative z-30 bg-primary overflow-hidden px-6 py-24 text-white">
-        {/* Subtle Background Elements */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20">
-          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-white rounded-full blur-[120px]" />
-          <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-white rounded-full blur-[120px]" />
-        </div>
-
-        <div className="max-w-4xl w-full text-center relative z-10 flex flex-col items-center">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ type: "spring", stiffness: 40, damping: 15 }}
-            viewport={{ once: true, amount: 0.5 }}
-            className="flex flex-col items-center"
-          >
-            <div className="w-20 h-20 rounded-3xl bg-white/10 flex items-center justify-center mb-10 shadow-inner border border-white/20">
-              <Activity size={40} className="text-white" />
-            </div>
-
-            <h2 className="text-5xl md:text-8xl xl:text-[8rem] font-heading font-black tracking-tighter mb-8 leading-none select-none whitespace-nowrap">
-              START <span className="text-white/40">GAME</span>
-            </h2>
-
-            <p className="text-white/70 font-mono text-sm md:text-lg mb-12 max-w-xl mx-auto leading-relaxed">
-              Your shift is about to begin. Every claim you rescue saves a valid patient encounter. Are you ready, Analyst?
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-6 mt-4">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={onStart}
-                className="group relative px-12 py-6 bg-white text-primary font-heading font-black text-2xl rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] hover:shadow-white/20 transition-all overflow-hidden"
-              >
-                <span className="relative z-10 flex items-center gap-3">
-                  INITIALIZE SHIFT
-                  <ChevronRight size={28} className="group-hover:translate-x-2 transition-transform duration-300" />
-                </span>
-                <div className="absolute inset-0 bg-primary/5 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-              </motion.button>
-
-              <button
-                onClick={() => setShowHelp(true)}
-                className="flex items-center justify-center gap-2 px-8 py-6 rounded-2xl border-2 border-white/20 font-heading font-bold hover:bg-white/10 transition-all"
-              >
-                <BookOpen size={20} />
-                OPERATIONS MANUAL
-              </button>
-            </div>
-
-            <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 0.3 }}
-              transition={{ delay: 1 }}
-              className="mt-16 flex items-center gap-4 text-[10px] font-mono tracking-[0.4em] uppercase"
-            >
-              <div className="h-px w-12 bg-white" />
-              National Medical Claims Division
-              <div className="h-px w-12 bg-white" />
-            </motion.div>
-          </motion.div>
         </div>
       </section>
 
