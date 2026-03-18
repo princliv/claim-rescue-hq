@@ -71,8 +71,8 @@ export default function ParticleField() {
             ctx.beginPath();
             ctx.moveTo(p.x, p.y);
             ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = '#00FFC8';
-            ctx.globalAlpha = (1 - dist / 120) * 0.08;
+            ctx.strokeStyle = '#3b82f6'; // Primary blue
+            ctx.globalAlpha = (1 - dist / 120) * 0.12;
             ctx.stroke();
           }
         }

@@ -4,7 +4,8 @@ import GameHUD from './GameHUD';
 import InstructorFeedback from './InstructorFeedback';
 import { useLevelTimer } from '@/hooks/useLevelTimer';
 import { LevelResult } from '@/types/game';
-import { AlertTriangle, CheckCircle, XCircle, FileText, Eye } from 'lucide-react';
+import QuestionInstructionModal from './QuestionInstructionModal';
+import { AlertTriangle, CheckCircle, XCircle, FileText, Eye, Check, Scale, Lightbulb } from 'lucide-react';
 
 interface Props { onComplete: (result: LevelResult) => void; }
 
@@ -32,11 +33,18 @@ export default function Level4Comparison({ onComplete }: Props) {
   const [showHint, setShowHint] = useState('');
   const [feedback, setFeedback] = useState<'correct' | 'wrong' | null>(null);
   const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
-  const [shake, setShake] = useState(false);
   const [instructorMsg, setInstructorMsg] = useState<{ correct: boolean; text: string } | null>(null);
+  const [showInstruction, setShowInstruction] = useState(true);
+  const [showQInstruction, setShowQInstruction] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const timer = useLevelTimer(90);
 
-  useEffect(() => { timer.start(); }, []);
+  useEffect(() => {
+    if (!showInstruction) {
+      setTimeout(() => setIsLoading(false), 800);
+      timer.start();
+    }
+  }, [showInstruction]);
 
   const finish = useCallback((fs: number, fc: number) => {
     timer.stop();
@@ -54,7 +62,7 @@ export default function Level4Comparison({ onComplete }: Props) {
     const pts = q.isFinal ? (isCorrect ? 50 : -30) : (isCorrect ? 10 : -5);
     setScore(s => s + pts);
     if (isCorrect) { setCorrectCount(c => c + 1); setFeedback('correct'); }
-    else { setFeedback('wrong'); setShake(true); setTimeout(() => setShake(false), 500); }
+    else { setFeedback('wrong'); }
 
     setInstructorMsg({ correct: isCorrect, text: q.explanation });
 
@@ -68,48 +76,108 @@ export default function Level4Comparison({ onComplete }: Props) {
   const handleHint = () => { if (hintsUsed < 2) { setShowHint(HINTS[hintsUsed]); setScore(s => s - 5); setHintsUsed(h => h + 1); } };
 
   return (
-    <div className="min-h-screen flex flex-col relative overflow-hidden">
-      <div className="absolute inset-0 dot-grid-bg pointer-events-none" />
+    <div className="min-h-screen flex flex-col bg-background">
+      <QuestionInstructionModal visible={showInstruction} type="compare-select" onDismiss={() => setShowInstruction(false)} autoDismissMs={5000} />
+      <QuestionInstructionModal visible={showQInstruction} type="select-one" onDismiss={() => setShowQInstruction(false)} autoDismissMs={5000} />
       <GameHUD level={4} title="DX Mismatch Puzzle" score={score} timeLeft={timer.timeLeft} hintsLeft={2 - hintsUsed} onHint={handleHint} />
 
-      <div className={`flex-1 p-6 relative z-10 ${shake ? 'animate-shake' : ''}`}>
+      <div className={`flex-1 p-6 relative z-10`}>
         {/* Side by side panels */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-5xl mx-auto mb-6">
-          <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} className="bg-card/90 backdrop-blur-sm border border-border rounded-xl p-5 corner-brackets">
-            <div className="flex items-center gap-2 mb-4">
-              <FileText size={16} className="text-primary" />
-              <h3 className="text-xs font-mono text-primary uppercase tracking-widest">📋 Claim Details</h3>
-            </div>
-            <div className="space-y-3 text-sm font-mono">
-              <div className="flex justify-between"><span className="text-muted-foreground text-xs">Patient:</span> <span className="font-semibold">Lisa R</span></div>
-              <div className="flex justify-between"><span className="text-muted-foreground text-xs">Procedure:</span> <span className="font-semibold">Ultrasound</span></div>
-              <motion.div
-                animate={compared ? { borderColor: 'hsl(0 76% 65% / 0.5)', backgroundColor: 'hsl(0 76% 65% / 0.1)' } : {}}
-                className="flex justify-between p-2 rounded-lg border border-transparent transition-all"
-              >
-                <span className="text-muted-foreground text-xs">DX Code:</span>
-                <span className={`font-bold ${compared ? 'text-destructive text-glow-danger' : 'text-primary'}`}>K21.9 <span className="text-xs font-normal text-muted-foreground">(GERD)</span></span>
-              </motion.div>
-              <div className="flex justify-between"><span className="text-muted-foreground text-xs">Denial:</span> <span className="text-warning font-semibold">17B</span></div>
-            </div>
+          <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} className="glass-card rounded-xl p-5 relative overflow-hidden">
+            {isLoading ? (
+              <div className="space-y-4 animate-pulse">
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="w-4 h-4 rounded bg-primary/20" />
+                  <div className="h-4 w-32 rounded bg-secondary" />
+                </div>
+                <div className="space-y-3">
+                  {[1, 2, 3, 4].map(i => (
+                    <div key={i} className="flex justify-between items-center">
+                       <div className="h-3 w-16 rounded bg-secondary" />
+                       <div className="h-4 w-24 rounded bg-primary/10" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <>
+                <div className="flex items-center gap-2 mb-4">
+                  <FileText size={16} className="text-primary" />
+                  <h3 className="text-xs font-mono text-primary uppercase tracking-widest">📋 Claim Details</h3>
+                </div>
+                <div className="space-y-3 text-sm font-mono">
+                  <div className="flex justify-between items-center">
+                    <span className="text-muted-foreground text-xs uppercase tracking-wider">Patient:</span> 
+                    <span className="font-semibold text-foreground">Lisa R</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-muted-foreground text-xs uppercase tracking-wider">Procedure:</span> 
+                    <span className="font-semibold text-foreground">Ultrasound</span>
+                  </div>
+                  <motion.div
+                    animate={compared ? { borderColor: 'hsl(0 76% 65% / 0.5)', backgroundColor: 'hsl(0 76% 65% / 0.1)' } : {}}
+                    className="flex justify-between items-center p-2 rounded-lg border border-transparent transition-all -mx-2"
+                  >
+                    <span className="text-muted-foreground text-xs uppercase tracking-wider">DX Code:</span>
+                    <div className="flex items-center gap-2">
+                      <span className={`px-2 py-0.5 rounded-md font-bold tracking-tight ${compared ? 'bg-destructive/10 text-destructive border border-destructive/20' : 'bg-primary/10 text-primary border border-primary/20'}`}>K21.9</span>
+                      <span className="text-xs font-normal text-muted-foreground">(GERD)</span>
+                    </div>
+                  </motion.div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-muted-foreground text-xs uppercase tracking-wider">Denial:</span> 
+                    <span className="px-2 py-0.5 rounded-md bg-warning/10 text-warning border border-warning/20 font-bold tracking-tight">17B</span>
+                  </div>
+                </div>
+              </>
+            )}
           </motion.div>
 
-          <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} className="bg-card/90 backdrop-blur-sm border border-border rounded-xl p-5 corner-brackets">
-            <div className="flex items-center gap-2 mb-4">
-              <FileText size={16} className="text-success" />
-              <h3 className="text-xs font-mono text-success uppercase tracking-widest">🔐 Authorization Details</h3>
-            </div>
-            <div className="space-y-3 text-sm font-mono">
-              <div className="flex justify-between"><span className="text-muted-foreground text-xs">Auth Status:</span> <span className="text-success font-semibold">✅ Found</span></div>
-              <div className="flex justify-between"><span className="text-muted-foreground text-xs">Auth Procedure:</span> <span className="font-semibold">Ultrasound</span></div>
-              <motion.div
-                animate={compared ? { borderColor: 'hsl(0 76% 65% / 0.5)', backgroundColor: 'hsl(0 76% 65% / 0.1)' } : {}}
-                className="flex justify-between p-2 rounded-lg border border-transparent transition-all"
-              >
-                <span className="text-muted-foreground text-xs">Auth DX:</span>
-                <span className={`font-bold ${compared ? 'text-destructive text-glow-danger' : 'text-primary'}`}>N20.0 <span className="text-xs font-normal text-muted-foreground">(Kidney stone)</span></span>
-              </motion.div>
-            </div>
+          <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} className="glass-card rounded-xl p-5 relative overflow-hidden">
+            {isLoading ? (
+              <div className="space-y-4 animate-pulse">
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="w-4 h-4 rounded bg-success/20" />
+                  <div className="h-4 w-40 rounded bg-secondary" />
+                </div>
+                <div className="space-y-3">
+                  {[1, 2, 3].map(i => (
+                    <div key={i} className="flex justify-between items-center">
+                       <div className="h-3 w-20 rounded bg-secondary" />
+                       <div className="h-4 w-28 rounded bg-success/10" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <>
+                <div className="flex items-center gap-2 mb-4">
+                  <FileText size={16} className="text-success" />
+                  <h3 className="text-xs font-mono text-success uppercase tracking-widest">🔐 Authorization Details</h3>
+                </div>
+                <div className="space-y-3 text-sm font-mono">
+                  <div className="flex justify-between items-center">
+                    <span className="text-muted-foreground text-xs uppercase tracking-wider">Auth Status:</span> 
+                    <span className="px-2 py-0.5 rounded-md bg-success/10 text-success border border-success/20 font-bold tracking-tight shadow-sm flex items-center gap-1"><Check size={12} /> Found</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-muted-foreground text-xs uppercase tracking-wider">Auth Procedure:</span> 
+                    <span className="font-semibold text-foreground">Ultrasound</span>
+                  </div>
+                  <motion.div
+                    animate={compared ? { borderColor: 'hsl(0 76% 65% / 0.5)', backgroundColor: 'hsl(0 76% 65% / 0.1)' } : {}}
+                    className="flex justify-between items-center p-2 rounded-lg border border-transparent transition-all -mx-2"
+                  >
+                    <span className="text-muted-foreground text-xs uppercase tracking-wider">Auth DX:</span>
+                    <div className="flex items-center gap-2">
+                      <span className={`px-2 py-0.5 rounded-md font-bold tracking-tight ${compared ? 'bg-destructive/10 text-destructive border border-destructive/20' : 'bg-primary/10 text-primary border border-primary/20'}`}>N20.0</span>
+                      <span className="text-xs font-normal text-muted-foreground">(Kidney stone)</span>
+                    </div>
+                  </motion.div>
+                </div>
+              </>
+            )}
           </motion.div>
         </div>
 
@@ -123,7 +191,7 @@ export default function Level4Comparison({ onComplete }: Props) {
             >
               <div className="flex items-center gap-3 justify-center p-3 bg-destructive/10 border border-destructive/30 rounded-xl">
                 <AlertTriangle size={18} className="text-destructive" />
-                <span className="font-mono text-sm text-destructive font-bold">⚠️ MISMATCH DETECTED: K21.9 (GERD) ≠ N20.0 (Kidney stone)</span>
+                <span className="font-mono text-sm text-destructive font-bold">MISMATCH DETECTED: K21.9 (GERD) ≠ N20.0 (Kidney stone)</span>
               </div>
             </motion.div>
           )}
@@ -139,8 +207,8 @@ export default function Level4Comparison({ onComplete }: Props) {
               </motion.button>
             ) : (
               <motion.button initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-                whileHover={{ scale: 1.05 }} onClick={() => setPhase('questions')}
-                className="px-8 py-4 bg-primary text-primary-foreground rounded-xl font-heading font-bold box-glow-strong">
+                whileHover={{ scale: 1.05 }} onClick={() => { setPhase('questions'); setShowQInstruction(true); }}
+                className="px-8 py-4 bg-primary text-primary-foreground rounded-lg font-heading font-semibold shadow-sm">
                 Proceed to Questions →
               </motion.button>
             )}
@@ -154,35 +222,67 @@ export default function Level4Comparison({ onComplete }: Props) {
             </div>
             <AnimatePresence mode="wait">
               <motion.div key={currentQ} initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }}
-                className="bg-card/90 backdrop-blur-sm border border-border rounded-xl p-6 corner-brackets">
-                <div className={`inline-block px-2 py-0.5 rounded text-xs font-mono font-bold mb-3 ${
+                className="glass-card rounded-xl p-6">
+                <div className={`flex items-center gap-1.5 px-2 py-0.5 rounded text-xs font-mono font-bold inline-block mb-3 ${
                   QUESTIONS[currentQ].isFinal ? 'bg-warning/15 text-warning border border-warning/30' : 'bg-primary/10 text-primary border border-primary/20'
                 }`}>
-                  {QUESTIONS[currentQ].isFinal ? '⚖️ FINAL DECISION' : `STEP ${currentQ + 1}`}
+                  {QUESTIONS[currentQ].isFinal ? <><Scale size={12} /> FINAL RULING</> : `PHASE ${currentQ + 1}`}
                 </div>
-                <p className="text-lg font-heading font-semibold text-foreground mb-5">{QUESTIONS[currentQ].question}</p>
-                <div className="space-y-2.5">
-                  {QUESTIONS[currentQ].options.map((opt, i) => {
-                    const isCorrectOpt = i === QUESTIONS[currentQ].correct;
-                    const showCorrect = feedback && isCorrectOpt;
-                    const showWrong = feedback === 'wrong' && selectedIdx === i && !isCorrectOpt;
-                    return (
-                      <motion.button key={i} whileHover={!feedback ? { scale: 1.02, x: 4 } : {}} onClick={() => handleAnswer(i)} disabled={feedback !== null}
-                        className={`w-full flex items-center gap-3 text-left px-5 py-3.5 rounded-xl font-mono text-sm transition-all border ${
-                          showCorrect ? 'bg-success/15 border-success/50 text-success box-glow-success'
-                          : showWrong ? 'bg-destructive/15 border-destructive/50 text-destructive box-glow-danger'
-                          : 'border-border bg-secondary/50 hover:neon-border hover:text-primary text-foreground'
-                        }`}>
-                        <span className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0 ${
-                          showCorrect ? 'bg-success/20 text-success' : showWrong ? 'bg-destructive/20 text-destructive' : 'bg-secondary text-muted-foreground'
-                        }`}>
-                          {showCorrect ? <CheckCircle size={14} /> : showWrong ? <XCircle size={14} /> : String.fromCharCode(65 + i)}
-                        </span>
-                        {opt}
-                      </motion.button>
-                    );
-                  })}
-                </div>
+                {QUESTIONS[currentQ].isFinal ? (
+                  <div className="text-center py-4">
+                    <p className="text-xl font-heading font-bold text-foreground mb-6">{QUESTIONS[currentQ].question}</p>
+                    <div className="flex gap-4 justify-center">
+                      {QUESTIONS[currentQ].options.map((opt, i) => {
+                        const isSelected = selectedIdx === i;
+                        const isCorrectOpt = i === QUESTIONS[currentQ].correct;
+                        const showCorrect = feedback && isCorrectOpt;
+                        const showWrong = feedback === 'wrong' && isSelected && !isCorrectOpt;
+                        return (
+                          <motion.button
+                            key={i}
+                            whileHover={!feedback ? { scale: 1.05 } : {}}
+                            whileTap={!feedback ? { scale: 0.95 } : {}}
+                            onClick={() => handleAnswer(i)}
+                            disabled={feedback !== null}
+                            className={`flex-1 flex flex-col items-center justify-center gap-2 p-5 rounded-xl font-mono text-base transition-all border ${
+                              showCorrect ? 'bg-success/10 border-success/50 text-success shadow-md'
+                              : showWrong ? 'bg-destructive/10 border-destructive/50 text-destructive shadow-md'
+                              : 'border-primary/20 bg-primary/5 hover:border-primary/50 hover:bg-primary/10 text-foreground'
+                            }`}
+                          >
+                            {opt}
+                          </motion.button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <p className="text-lg font-heading font-semibold text-foreground mb-5">{QUESTIONS[currentQ].question}</p>
+                    <div className="space-y-2.5">
+                      {QUESTIONS[currentQ].options.map((opt, i) => {
+                        const isCorrectOpt = i === QUESTIONS[currentQ].correct;
+                        const showCorrect = feedback && isCorrectOpt;
+                        const showWrong = feedback === 'wrong' && selectedIdx === i && !isCorrectOpt;
+                        return (
+                          <motion.button key={i} whileHover={!feedback ? { scale: 1.02, x: 4 } : {}} onClick={() => handleAnswer(i)} disabled={feedback !== null}
+                            className={`w-full flex items-center gap-3 text-left px-5 py-3.5 rounded-xl font-mono text-sm transition-all border ${
+                              showCorrect ? 'bg-success/10 border-success/50 text-success'
+                              : showWrong ? 'bg-destructive/10 border-destructive/50 text-destructive'
+                              : 'border-border bg-secondary/30 hover:border-primary/40 hover:text-primary text-foreground'
+                            }`}>
+                            <span className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0 ${
+                              showCorrect ? 'bg-success/20 text-success' : showWrong ? 'bg-destructive/20 text-destructive' : 'bg-secondary text-muted-foreground'
+                            }`}>
+                              {showCorrect ? <CheckCircle size={14} /> : showWrong ? <XCircle size={14} /> : String.fromCharCode(65 + i)}
+                            </span>
+                            {opt}
+                          </motion.button>
+                        );
+                      })}
+                    </div>
+                  </>
+                )}
               </motion.div>
             </AnimatePresence>
           </div>
@@ -190,8 +290,8 @@ export default function Level4Comparison({ onComplete }: Props) {
 
         <AnimatePresence>
           {showHint && (
-            <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="max-w-5xl mx-auto mt-4 p-3 bg-warning/10 border border-warning/30 rounded-xl text-warning text-xs font-mono">
-              💡 {showHint}
+            <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="max-w-5xl mx-auto mt-4 p-3 bg-warning/10 border border-warning/30 rounded-xl text-warning text-xs font-mono flex items-center gap-2">
+              <Lightbulb size={14} className="flex-shrink-0" /> {showHint}
             </motion.div>
           )}
         </AnimatePresence>

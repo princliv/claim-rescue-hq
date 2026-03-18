@@ -1,8 +1,7 @@
 import { motion } from 'framer-motion';
 import { LevelResult, LEVEL_TITLES } from '@/types/game';
-import { RotateCcw, Copy, Check, Trophy, Star, TrendingUp } from 'lucide-react';
+import { RotateCcw, Copy, Check, Trophy, Star, TrendingUp, CheckCircle, Activity, AlertTriangle } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import ParticleField from './ParticleField';
 
 interface Props {
   results: LevelResult[];
@@ -29,55 +28,47 @@ export default function FinalDashboard({ results, totalScore, onPlayAgain }: Pro
   }, [totalScore]);
 
   const badge = totalScore >= 500
-    ? { label: 'EXPERT ANALYST', color: 'text-success', emoji: '🟢', glow: 'text-glow-success', ring: 'border-success/50' }
+    ? { label: 'Certified Senior Analyst', color: 'text-success', icon: <CheckCircle size={48} className="text-success drop-shadow-sm" /> }
     : totalScore >= 300
-      ? { label: 'INTERMEDIATE ANALYST', color: 'text-warning', emoji: '🟡', glow: 'text-glow-warning', ring: 'border-warning/50' }
-      : { label: 'BEGINNER ANALYST', color: 'text-destructive', emoji: '🔴', glow: 'text-glow-danger', ring: 'border-destructive/50' };
+      ? { label: 'Certified Associate', color: 'text-warning', icon: <Activity size={48} className="text-warning drop-shadow-sm" /> }
+      : { label: 'Junior Analyst', color: 'text-destructive', icon: <AlertTriangle size={48} className="text-destructive drop-shadow-sm" /> };
 
   const shareScore = () => {
-    navigator.clipboard.writeText(`🏆 Claim Rescue Score: ${totalScore}/600 — ${badge.label}`);
+    navigator.clipboard.writeText(`Claim Rescue Score: ${totalScore}/600 — ${badge.label}`);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden animated-gradient">
-      <ParticleField />
-      <div className="absolute inset-0 grid-bg pointer-events-none z-[1]" />
-
+    <div className="min-h-screen flex items-center justify-center p-6 bg-background">
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ type: 'spring', stiffness: 80 }}
-        className="relative z-10 bg-card/90 backdrop-blur-sm border border-border rounded-2xl p-8 max-w-2xl w-full"
+        className="bg-white border rounded-xl p-8 max-w-2xl w-full shadow-sm"
       >
-        {/* Top decoration */}
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-primary to-transparent rounded-t-2xl" />
-
         <div className="text-center mb-8">
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 neon-border font-mono text-xs text-primary mb-4"
+            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/5 border border-primary/20 font-mono text-xs text-primary mb-4"
           >
-            <Trophy size={12} /> MISSION COMPLETE
+            <Trophy size={12} /> Training Program Complete
           </motion.div>
 
           <motion.div
-            initial={{ scale: 0, rotate: -180 }}
-            animate={{ scale: 1, rotate: 0 }}
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
             transition={{ delay: 0.3, type: 'spring', stiffness: 150 }}
-            className={`w-24 h-24 rounded-full border-4 ${badge.ring} flex items-center justify-center mx-auto mb-4`}
+            className="text-5xl mb-3"
           >
-            <span className="text-5xl">{badge.emoji}</span>
+            {badge.icon}
           </motion.div>
 
-          <p className={`text-xl font-heading font-bold ${badge.color} ${badge.glow} mb-4`}>{badge.label}</p>
+          <p className={`text-lg font-heading font-semibold ${badge.color} mb-4`}>{badge.label}</p>
 
           <div className="flex items-center justify-center gap-2">
-            <motion.span
-              className="font-mono text-5xl font-black text-primary text-glow"
-            >
+            <motion.span className="font-mono text-4xl font-black text-primary">
               {displayScore}
             </motion.span>
             <span className="text-muted-foreground text-xl font-mono">/600</span>
@@ -90,22 +81,21 @@ export default function FinalDashboard({ results, totalScore, onPlayAgain }: Pro
                 initial={{ width: 0 }}
                 animate={{ width: `${(totalScore / 600) * 100}%` }}
                 transition={{ delay: 0.5, duration: 1.5, ease: 'easeOut' }}
-                className="h-full bg-gradient-to-r from-primary/80 to-primary rounded-full"
-                style={{ boxShadow: '0 0 10px hsl(163 100% 50% / 0.4)' }}
+                className="h-full bg-primary rounded-full"
               />
             </div>
           </div>
         </div>
 
         {/* Table */}
-        <div className="overflow-hidden rounded-xl border border-border mb-6">
-          <table className="w-full text-sm font-mono">
+        <div className="overflow-hidden rounded-lg border mb-6">
+          <table className="w-full text-sm">
             <thead>
               <tr className="bg-secondary/50">
-                <th className="text-left py-3 px-4 text-muted-foreground text-xs font-medium">MISSION</th>
-                <th className="text-center py-3 px-4 text-muted-foreground text-xs font-medium">SCORE</th>
-                <th className="text-center py-3 px-4 text-muted-foreground text-xs font-medium">TIME</th>
-                <th className="text-center py-3 px-4 text-muted-foreground text-xs font-medium">RATING</th>
+                <th className="text-left py-3 px-4 text-muted-foreground text-xs font-medium">Case Study</th>
+                <th className="text-center py-3 px-4 text-muted-foreground text-xs font-medium">Score</th>
+                <th className="text-center py-3 px-4 text-muted-foreground text-xs font-medium">Time</th>
+                <th className="text-center py-3 px-4 text-muted-foreground text-xs font-medium">Evaluation</th>
               </tr>
             </thead>
             <tbody>
@@ -116,14 +106,14 @@ export default function FinalDashboard({ results, totalScore, onPlayAgain }: Pro
                 return (
                   <motion.tr
                     key={lvl}
-                    initial={{ opacity: 0, x: -20 }}
+                    initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.6 + i * 0.1 }}
-                    className="border-t border-border/50 hover:bg-secondary/20 transition-colors"
+                    className="border-t hover:bg-secondary/20 transition-colors"
                   >
-                    <td className="py-3 px-4 text-foreground text-xs">{LEVEL_TITLES[lvl]}</td>
-                    <td className="py-3 px-4 text-center text-primary font-bold">{r?.score ?? '-'}</td>
-                    <td className="py-3 px-4 text-center text-muted-foreground">{r ? `${r.time}s` : '-'}</td>
+                    <td className="py-3 px-4 text-foreground text-xs font-medium">{LEVEL_TITLES[lvl]}</td>
+                    <td className="py-3 px-4 text-center text-primary font-bold font-mono">{r?.score ?? '-'}</td>
+                    <td className="py-3 px-4 text-center text-muted-foreground font-mono">{r ? `${r.time}s` : '-'}</td>
                     <td className="py-3 px-4 text-center">
                       <div className="flex gap-0.5 justify-center">
                         {[1, 2, 3].map(s => (
@@ -140,19 +130,19 @@ export default function FinalDashboard({ results, totalScore, onPlayAgain }: Pro
 
         <div className="flex gap-3">
           <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
             onClick={shareScore}
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-3.5 bg-secondary text-foreground rounded-xl font-heading font-semibold neon-border hover:box-glow transition-all"
+            className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-white text-foreground rounded-lg font-heading font-medium border hover:bg-secondary/50 transition-colors"
           >
             {copied ? <Check size={16} className="text-success" /> : <Copy size={16} />}
             {copied ? 'Copied!' : 'Share Score'}
           </motion.button>
           <motion.button
-            whileHover={{ scale: 1.05, boxShadow: '0 0 25px hsl(163 100% 50% / 0.4)' }}
-            whileTap={{ scale: 0.95 }}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
             onClick={onPlayAgain}
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-3.5 bg-primary text-primary-foreground rounded-xl font-heading font-bold box-glow-strong"
+            className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-primary text-primary-foreground rounded-lg font-heading font-semibold shadow-sm"
           >
             <RotateCcw size={16} /> Play Again
           </motion.button>

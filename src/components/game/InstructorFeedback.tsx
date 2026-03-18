@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle, XCircle } from 'lucide-react';
+import { CheckCircle, XCircle, Stethoscope } from 'lucide-react';
 
 interface Props {
   visible: boolean;
@@ -8,11 +8,11 @@ interface Props {
 }
 
 const CORRECT_MESSAGES = [
-  "Excellent work, analyst! 🎯",
-  "Well done! Sharp thinking! 💪",
-  "Perfect call! You nailed it! ⭐",
-  "Outstanding! That's the right move! 🏆",
-  "Spot on! Great analysis! 🔥",
+  "Excellent work, analyst!",
+  "Well done! Sharp thinking!",
+  "Perfect call! You nailed it!",
+  "Outstanding! That's the right move!",
+  "Spot on! Great analysis!",
 ];
 
 const WRONG_MESSAGES = [
@@ -35,12 +35,12 @@ export default function InstructorFeedback({ visible, isCorrect, explanation }: 
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 20, scale: 0.9 }}
           transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-          className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 max-w-lg w-[90vw]"
+          className="fixed bottom-6 right-6 z-50 max-w-sm w-[90vw]"
         >
-          <div className={`rounded-2xl border-2 p-4 backdrop-blur-md shadow-2xl flex items-start gap-4 ${
+          <div className={`rounded-xl border p-4 bg-white shadow-lg flex items-start gap-4 ${
             isCorrect
-              ? 'bg-success/10 border-success/40'
-              : 'bg-destructive/10 border-destructive/40'
+              ? 'border-success/40'
+              : 'border-destructive/40'
           }`}>
             {/* Avatar */}
             <motion.div
@@ -51,7 +51,7 @@ export default function InstructorFeedback({ visible, isCorrect, explanation }: 
                 isCorrect ? 'bg-success/20' : 'bg-destructive/20'
               }`}
             >
-              {isCorrect ? '🧑‍⚕️' : '🧑‍⚕️'}
+              {isCorrect ? <Stethoscope size={24} className="text-success" /> : <Stethoscope size={24} className="text-destructive" />}
             </motion.div>
 
             <div className="flex-1 min-w-0">
