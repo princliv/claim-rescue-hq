@@ -12,7 +12,9 @@ import {
   MdTimer, 
   MdOutlineAnalytics, 
   MdAssignmentTurnedIn, 
-  MdMilitaryTech 
+  MdMilitaryTech,
+  MdFactCheck,
+  MdStars
 } from 'react-icons/md';
 import { 
   BsLightningFill, 
@@ -25,19 +27,24 @@ interface Props {
   result: LevelResult;
   onNext: () => void;
   onRetry: () => void;
+  onDashboard: () => void;
   isLastLevel: boolean;
 }
 
-export default function LevelResults({ result, onNext, onRetry, isLastLevel }: Props) {
+export default function LevelResults({ result, onNext, onRetry, onDashboard, isLastLevel }: Props) {
   const accuracy = result.totalQuestions > 0
     ? Math.round((result.correctAnswers / result.totalQuestions) * 100)
     : 0;
 
-  const badge = accuracy >= 90
-    ? { label: 'SENIOR ANALYST', color: 'text-emerald-600', bg: 'bg-emerald-50', icon: <MdMilitaryTech size={56} className="text-emerald-500" />, border: 'border-emerald-200' }
-    : accuracy >= 60
-      ? { label: 'ASSOCIATE ANALYST', color: 'text-blue-600', bg: 'bg-blue-50', icon: <MdAssignmentTurnedIn size={56} className="text-blue-500" />, border: 'border-blue-200' }
-      : { label: 'JUNIOR ANALYST', color: 'text-amber-600', bg: 'bg-amber-50', icon: <MdOutlineAnalytics size={56} className="text-amber-500" />, border: 'border-amber-200' };
+  const totalPoints = result.score;
+  const maxPossible = (10 * 4) + (10 * result.totalQuestions) + 50 + 20 + 10; // Steps + Quiz + Decision + Max Bonus + Bonus Q
+  const performancePct = Math.min(100, Math.round((totalPoints / maxPossible) * 100));
+
+  const rating = performancePct >= 90
+    ? { label: 'Expert Analyst', color: 'text-emerald-500', bg: 'bg-emerald-500/10', icon: <MdMilitaryTech size={56} className="text-emerald-400" />, border: 'border-emerald-500/30' }
+    : performancePct >= 70
+      ? { label: 'Intermediate', color: 'text-blue-500', bg: 'bg-blue-500/10', icon: <MdAssignmentTurnedIn size={56} className="text-blue-400" />, border: 'border-blue-500/30' }
+      : { label: 'Beginner', color: 'text-amber-500', bg: 'bg-amber-500/10', icon: <MdOutlineAnalytics size={56} className="text-amber-400" />, border: 'border-amber-500/30' };
 
   return (
     <div className="min-h-screen flex items-center justify-center p-6 bg-[#fafbfc] relative overflow-hidden font-sans">
@@ -51,18 +58,18 @@ export default function LevelResults({ result, onNext, onRetry, isLastLevel }: P
         initial={{ opacity: 0, scale: 0.95, y: 30 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ type: 'spring', stiffness: 100, damping: 25 }}
-        className="bg-white border border-slate-100 rounded-[64px] p-8 md:p-12 max-w-4xl w-full shadow-[0_50px_100px_rgba(0,0,0,0.1)] relative overflow-hidden"
+        className="bg-white border border-slate-100 rounded-[64px] p-8 md:p-12 max-w-5xl w-full shadow-[0_50px_100px_rgba(0,0,0,0.1)] relative overflow-hidden"
       >
-        <div className="flex flex-col md:flex-row gap-12 items-stretch">
+        <div className="flex flex-col lg:flex-row gap-12 items-stretch">
           
-          <div className="flex-1 flex flex-col items-center justify-center text-center py-6 border-b md:border-b-0 md:border-r border-slate-100 lg:pr-12">
+          <div className="flex-1 flex flex-col items-center justify-center text-center py-6 border-b lg:border-b-0 lg:border-r border-slate-100 lg:pr-12">
             <motion.div
               initial={{ scale: 0, rotate: -20 }}
               animate={{ scale: 1, rotate: 0 }}
               transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
-              className={`w-32 h-32 rounded-[40px] flex items-center justify-center mb-8 shadow-2xl ${badge.bg} ${badge.border} border-2 relative`}
+              className={`w-32 h-32 rounded-[40px] flex items-center justify-center mb-8 shadow-2xl ${rating.bg} ${rating.border} border-2 relative`}
             >
-              {badge.icon}
+              {rating.icon}
               <div className="absolute -bottom-2 -right-2 bg-primary text-white p-2.5 rounded-2xl shadow-xl">
                  <BsJournalCheck size={20} />
               </div>
@@ -78,61 +85,54 @@ export default function LevelResults({ result, onNext, onRetry, isLastLevel }: P
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4 }}
-              className={`px-5 py-2.5 rounded-3xl ${badge.bg} ${badge.color} font-mono font-black text-xs tracking-[0.4em] inline-block border ${badge.border} uppercase`}
+              className={`px-5 py-2.5 rounded-3xl ${rating.bg} ${rating.color} font-mono font-black text-xs tracking-[0.4em] inline-block border ${rating.border} uppercase`}
             >
-              {badge.label}
+              {rating.label}
             </motion.div>
           </div>
 
-          <div className="flex-[1.4] flex flex-col justify-between pt-4 md:pt-0">
+          <div className="flex-[2] flex flex-col justify-between pt-4 lg:pt-0">
             
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 mb-10">
+            {/* Breakdown Stats */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
               {[
-                { icon: <BsLightningFill size={16} />, label: 'SCORE', value: result.score.toString(), color: 'text-primary', bg: 'bg-primary/5' },
-                { icon: <MdTimer size={16} />, label: 'TIME', value: `${result.time}s`, color: 'text-slate-600', bg: 'bg-slate-50' },
-                { icon: <BsGraphUpArrow size={16} />, label: 'ACCURACY', value: `${accuracy}%`, color: accuracy >= 60 ? 'text-emerald-600' : 'text-rose-600', bg: accuracy >= 60 ? 'bg-emerald-50' : 'bg-rose-50' },
+                { label: 'STEPS', value: result.stepScore, color: 'text-blue-500', icon: <MdOutlineAnalytics size={14} /> },
+                { label: 'QUIZ', value: result.quizScore, color: 'text-emerald-500', icon: <MdFactCheck size={14} /> },
+                { label: 'DECISION', value: result.decisionScore, color: result.decisionScore > 0 ? 'text-emerald-600' : 'text-rose-500', icon: <MdCheckCircle size={14} /> },
+                { label: 'INTEL', value: result.bonusScore || 0, color: 'text-amber-500', icon: <MdStars size={14} /> },
+                { label: 'SPEED', value: result.timeBonus, color: 'text-primary', icon: <BsLightningFill size={14} /> },
               ].map((stat, i) => (
                 <motion.div
                   key={stat.label}
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.4 + i * 0.1 }}
-                  className={`${stat.bg} border-2 border-white rounded-[32px] p-4 text-center shadow-sm flex flex-col items-center gap-2`}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5 + i * 0.1 }}
+                  className="bg-slate-50 rounded-3xl p-4 border border-slate-100 flex flex-col items-center gap-1"
                 >
-                  <div className={`${stat.color} p-2 rounded-xl bg-white shadow-sm`}>
-                    {stat.icon}
-                  </div>
-                  <p className="text-[8px] font-mono font-black text-slate-400 uppercase tracking-widest leading-none">{stat.label}</p>
-                  <p className={`text-xl font-mono font-black tracking-tighter ${stat.color} leading-none`}>{stat.value}</p>
+                  <div className={`${stat.color} mb-1 opacity-70`}>{stat.icon}</div>
+                  <span className="text-[8px] font-mono font-black text-slate-400 uppercase tracking-widest">{stat.label}</span>
+                  <span className={`text-lg font-mono font-black ${stat.color}`}>{stat.value >= 0 ? '+' : ''}{stat.value}</span>
                 </motion.div>
               ))}
             </div>
 
-            <div className="bg-slate-50 rounded-[40px] p-6 mb-10 border border-slate-100 relative">
-               <h3 className="text-[8px] font-mono font-black text-slate-400 uppercase tracking-[0.3em] mb-4 text-center">Analytic Breakdown</h3>
-               <div className="flex flex-wrap items-center justify-center gap-8">
-                  <div className="flex items-center gap-3">
-                    <MdCheckCircle size={20} className="text-emerald-500" />
-                    <div className="flex flex-col">
-                       <span className="text-sm font-mono font-black text-slate-800 leading-none">{result.correctAnswers}</span>
-                       <span className="text-[8px] text-slate-400 font-bold uppercase tracking-widest">VERIFIED</span>
-                    </div>
+            <div className="bg-slate-900 text-white rounded-[40px] p-8 mb-10 relative overflow-hidden">
+               <div className="absolute top-0 right-0 w-32 h-32 bg-primary/20 rounded-bl-full blur-3xl" />
+               <div className="flex flex-col md:flex-row items-center justify-between gap-8 relative z-10">
+                  <div className="flex flex-col items-center md:items-start">
+                     <span className="text-[9px] font-mono font-black text-slate-400 uppercase tracking-[0.3em] mb-2">Aggregate_Audit_Score</span>
+                     <span className="text-6xl font-mono font-black tracking-tighter text-white">{result.score}</span>
                   </div>
-                  <div className="h-4 w-px bg-slate-200 hidden sm:block" />
-                  <div className="flex items-center gap-3">
-                    <MdCancel size={20} className="text-rose-400" />
-                    <div className="flex flex-col">
-                       <span className="text-sm font-mono font-black text-slate-800 leading-none">{result.totalQuestions - result.correctAnswers}</span>
-                       <span className="text-[8px] text-slate-400 font-bold uppercase tracking-widest">ERRORS</span>
-                    </div>
-                  </div>
-                  <div className="h-4 w-px bg-slate-200 hidden sm:block" />
-                  <div className="flex items-center gap-3">
-                    <BsFillStarFill size={18} className="text-amber-400" />
-                    <div className="flex flex-col">
-                       <span className="text-sm font-mono font-black text-slate-800 leading-none">{result.hintsUsed}</span>
-                       <span className="text-[8px] text-slate-400 font-bold uppercase tracking-widest">HINTS</span>
-                    </div>
+                  <div className="flex gap-8">
+                     <div className="flex flex-col items-center">
+                        <span className="text-[8px] font-mono font-black text-slate-500 uppercase tracking-widest mb-1">ACCURACY</span>
+                        <span className="text-2xl font-mono font-black text-emerald-400">{accuracy}%</span>
+                     </div>
+                     <div className="h-10 w-px bg-white/10" />
+                     <div className="flex flex-col items-center">
+                        <span className="text-[8px] font-mono font-black text-slate-500 uppercase tracking-widest mb-1">PERFORMANCE</span>
+                        <span className="text-2xl font-mono font-black text-primary">{performancePct}%</span>
+                     </div>
                   </div>
                </div>
             </div>
@@ -142,17 +142,27 @@ export default function LevelResults({ result, onNext, onRetry, isLastLevel }: P
                 whileHover={{ y: -5, scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={onRetry}
-                className="flex-[0.8] flex items-center justify-center gap-3 px-8 py-5 bg-white text-slate-600 rounded-[28px] font-mono text-xs font-black border-2 border-slate-100 hover:bg-slate-50 transition-all uppercase tracking-widest"
+                className="flex-1 flex items-center justify-center gap-3 px-6 py-5 bg-white text-slate-600 rounded-[28px] font-mono text-xs font-black border-2 border-slate-100 hover:bg-slate-50 transition-all uppercase tracking-widest"
               >
                 <MdRefresh size={20} /> Re-Sync
               </motion.button>
+              
+              <motion.button
+                whileHover={{ y: -5, scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={onDashboard}
+                className="flex-1 flex items-center justify-center gap-3 px-6 py-5 bg-slate-100 text-slate-600 rounded-[28px] font-mono text-xs font-black hover:bg-slate-200 transition-all uppercase tracking-widest"
+              >
+                 Dashboard
+              </motion.button>
+
               <motion.button
                 whileHover={{ y: -5, scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={onNext}
-                className="flex-1 flex items-center justify-center gap-3 px-8 py-5 bg-primary text-white rounded-[28px] font-mono text-xs font-black shadow-lg shadow-primary/20 hover:bg-blue-700 transition-all uppercase tracking-widest"
+                className="flex-[1.5] flex items-center justify-center gap-3 px-8 py-5 bg-primary text-white rounded-[28px] font-mono text-xs font-black shadow-lg shadow-primary/20 hover:bg-blue-700 transition-all uppercase tracking-widest"
               >
-                {isLastLevel ? 'Review Global Analytics' : 'Begin Next Investigation'} <MdNavigateNext size={24} />
+                {isLastLevel ? 'Final Review' : 'Next Case'} <MdNavigateNext size={24} />
               </motion.button>
             </div>
           </div>

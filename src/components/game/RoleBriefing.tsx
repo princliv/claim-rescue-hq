@@ -104,9 +104,9 @@ export default function RoleBriefing({ onContinue }: Props) {
             className="text-center mt-8 -translate-y-12 relative z-30"
           >
             <h1 className="text-6xl font-heading font-black tracking-tighter uppercase leading-none mb-2 drop-shadow-lg">
-               Claims <span className="text-primary">Analyst</span>
+               Split Bill <span className="text-primary">Detective</span>
             </h1>
-            <p className="text-[10px] font-mono text-slate-400 uppercase tracking-[0.5em] mb-8">System_Designation: Guardian_01</p>
+            <p className="text-[10px] font-mono text-slate-400 uppercase tracking-[0.5em] mb-8">System_Designation: CAS_ANALYST_01</p>
           </motion.div>
         </div>
 
@@ -119,7 +119,7 @@ export default function RoleBriefing({ onContinue }: Props) {
            >
               <h3 className="text-sm font-heading font-black uppercase tracking-widest mb-6">Mission Control</h3>
               <p className="text-[10px] font-mono text-slate-500 leading-relaxed uppercase tracking-tighter mb-8">
-                Initialize the command dashboard to begin your high-level clinical investigations.
+                Initialize the command dashboard to begin your high-level SPLITBL investigations.
               </p>
               
               <motion.button

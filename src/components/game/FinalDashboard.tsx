@@ -48,10 +48,10 @@ export default function FinalDashboard({ results, totalScore, onPlayAgain }: Pro
   }, [totalScore]);
 
   const badge = totalScore >= 500
-    ? { label: 'CERTIFIED SENIOR ANALYST', color: 'text-emerald-600', icon: <MdWorkspacePremium size={64} className="text-emerald-500" />, bg: 'bg-emerald-50', border: 'border-emerald-200' }
+    ? { label: 'Expert Analyst', color: 'text-emerald-600', icon: <MdWorkspacePremium size={64} className="text-emerald-500" />, bg: 'bg-emerald-50', border: 'border-emerald-200' }
     : totalScore >= 300
-      ? { label: 'CERTIFIED ASSOCIATE', color: 'text-blue-600', icon: <MdMilitaryTech size={64} className="text-blue-500" />, bg: 'bg-blue-50', border: 'border-blue-200' }
-      : { label: 'JUNIOR ANALYST', color: 'text-amber-600', icon: <MdOutlineAnalytics size={64} className="text-amber-500" />, bg: 'bg-amber-50', border: 'border-amber-200' };
+      ? { label: 'Intermediate', color: 'text-blue-600', icon: <MdMilitaryTech size={64} className="text-blue-500" />, bg: 'bg-blue-50', border: 'border-blue-200' }
+      : { label: 'Beginner', color: 'text-amber-600', icon: <MdOutlineAnalytics size={64} className="text-amber-500" />, bg: 'bg-amber-50', border: 'border-amber-200' };
 
   const shareScore = () => {
     navigator.clipboard.writeText(`Claim Rescue HQ Certified — Score: ${totalScore}/600 — ${badge.label}`);

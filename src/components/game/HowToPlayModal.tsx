@@ -92,13 +92,13 @@ export default function HowToPlayModal({ open, onClose }: Props) {
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
             transition={{ type: 'spring', stiffness: 200 }}
             onClick={e => e.stopPropagation()}
-            className="bg-white border rounded-2xl p-0 max-w-3xl w-full overflow-hidden shadow-2xl"
+            className="bg-slate-900 border border-white/10 rounded-2xl p-0 max-w-3xl w-full overflow-hidden shadow-2xl backdrop-blur-2xl"
           >
             {/* Header */}
-            <div className="px-6 py-4 border-b border-border flex items-center justify-between bg-card">
+            <div className="px-6 py-4 border-b border-white/5 flex items-center justify-between bg-slate-900">
               <div className="flex items-center gap-2">
-                <Shield size={18} className="text-primary" />
-                <h2 className="text-lg font-heading font-bold text-foreground">Training Guide</h2>
+                <Shield size={18} className="text-blue-400" />
+                <h2 className="text-lg font-heading font-bold text-white">Training Guide</h2>
               </div>
               <button onClick={onClose} className="text-muted-foreground hover:text-foreground p-1 rounded-lg hover:bg-secondary transition">
                 <X size={18} />
@@ -106,8 +106,8 @@ export default function HowToPlayModal({ open, onClose }: Props) {
             </div>
 
             <div className="p-6 md:p-8">
-              <p className="text-sm text-foreground/80 font-mono leading-relaxed mb-6">
-                You are a <span className="text-primary font-bold">Medicare Claims Analyst</span>. Investigate denied claims across 5 increasingly complex levels.
+              <p className="text-sm text-slate-300 font-mono leading-relaxed mb-6">
+                You are a <span className="text-blue-400 font-bold">Medicare Claims Analyst</span>. Investigate denied claims across 5 increasingly complex levels.
               </p>
 
               {/* Card content with animation */}
@@ -120,9 +120,9 @@ export default function HowToPlayModal({ open, onClose }: Props) {
                   transition={{ duration: 0.25 }}
                   className="bg-secondary/30 border border-border/50 rounded-xl p-6 min-h-[220px]"
                 >
-                  <div className="flex items-center gap-2 mb-4 border-b border-border/50 pb-3">
+                  <div className="flex items-center gap-2 mb-4 border-b border-white/5 pb-3">
                     <section.icon size={20} className={section.color} />
-                    <h3 className="text-base font-heading font-bold text-foreground">{section.title}</h3>
+                    <h3 className="text-base font-heading font-bold text-white">{section.title}</h3>
                   </div>
                   
                   {section.desc && (
@@ -154,19 +154,19 @@ export default function HowToPlayModal({ open, onClose }: Props) {
                           initial={{ opacity: 0, y: 5 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: i * 0.1 }}
-                          className="flex gap-4 items-start bg-white p-4 rounded-lg border border-border/50 shadow-sm"
+                          className="flex gap-4 items-start bg-slate-800/50 p-4 rounded-lg border border-white/5 shadow-sm"
                         >
-                          <div className={`mt-0.5 p-2 rounded-lg bg-secondary/50 flex-shrink-0 border border-border/50 ${section.color}`}>
+                          <div className={`mt-0.5 p-2 rounded-lg bg-slate-800 flex-shrink-0 border border-white/5 ${section.color}`}>
                             <lvl.icon size={18} />
                           </div>
                           <div>
                             <div className="flex items-center gap-2 mb-1">
-                              <h4 className="text-sm font-bold font-mono text-foreground capitalize">{lvl.level}</h4>
-                              <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-secondary text-muted-foreground font-bold">
+                              <h4 className="text-sm font-bold font-mono text-white capitalize">{lvl.level}</h4>
+                              <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 font-bold">
                                 {lvl.action}
                               </span>
                             </div>
-                            <p className="text-xs font-mono text-muted-foreground leading-relaxed">
+                            <p className="text-xs font-mono text-slate-400 leading-relaxed">
                               {lvl.desc}
                             </p>
                           </div>
@@ -183,7 +183,7 @@ export default function HowToPlayModal({ open, onClose }: Props) {
                 <button
                   onClick={() => setPage(p => p - 1)}
                   disabled={page === 0}
-                  className="flex items-center gap-1 px-5 py-2.5 rounded-lg text-sm font-mono border bg-secondary/50 text-foreground hover:border-primary/40 hover:text-primary transition-all disabled:opacity-30 disabled:pointer-events-none font-bold"
+                  className="flex items-center gap-1 px-5 py-2.5 rounded-lg text-sm font-mono border border-white/10 bg-slate-800 text-slate-300 hover:border-blue-400/40 hover:text-blue-400 transition-all disabled:opacity-30 disabled:pointer-events-none font-bold"
                 >
                   <ChevronLeft size={16} /> Previous
                 </button>

@@ -5,10 +5,40 @@ export interface LevelResult {
   totalQuestions: number;
   correctAnswers: number;
   hintsUsed: number;
+  stepScore: number;
+  quizScore: number;
+  decisionScore: number;
+  timeBonus: number;
+  bonusScore?: number;
+}
+
+export interface InvestigationStep {
+  id: string;
+  label: string;
+  icon: string;
+  data: string;
+}
+
+export interface LevelScenario {
+  patientType: string;
+  tob: string;
+  revenueCodes: string[];
+  admissionDate: string;
+  serviceDate: string;
+  splitBlEdit: string;
+  mhiHint: string;
+  cfiHint: string;
+  hcpcs?: string[];
+}
+
+export interface KnowledgeQuestion {
+  question: string;
+  options: string[];
+  correct: number;
 }
 
 export interface GameState {
-  currentScreen: 'start' | 'roleBriefing' | 'levelSelect' | 'gameplay' | 'levelResults' | 'finalDashboard';
+  currentScreen: 'start' | 'roleBriefing' | 'levelSelect' | 'gameplay' | 'levelResults' | 'finalDashboard' | 'howToPlay';
   currentLevel: number;
   unlockedLevels: number[];
   levelResults: LevelResult[];
@@ -20,17 +50,17 @@ export interface GameState {
 export type Screen = GameState['currentScreen'];
 
 export const LEVEL_TITLES: Record<number, string> = {
-  1: 'Basic LCD Denial',
-  2: 'NCD Case Investigation',
-  3: 'Authorization Override',
-  4: 'DX Mismatch Puzzle',
-  5: 'Multi-Service Manager',
+  1: 'Basic SPLITBL Identification',
+  2: 'SPLITBL Not Applicable',
+  3: 'SB Field Code Interpretation',
+  4: 'Exception Case (Ambulance)',
+  5: 'Advanced Case (Multiple Rules)',
 };
 
 export const LEVEL_FORMATS: Record<number, string> = {
-  1: 'Step-by-Step Detective',
-  2: 'Drag & Drop Board',
-  3: 'Terminal Simulator',
-  4: 'Comparison Puzzle',
-  5: 'Split-Screen Dual Case',
+  1: 'Identify Facility Setup',
+  2: 'Physician Rule Check',
+  3: 'Indicator Interpretation',
+  4: 'Exclusion Verification',
+  5: 'Complex Rule Logic',
 };

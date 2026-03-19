@@ -10,6 +10,7 @@ import Level3Terminal from '@/components/game/Level3Terminal';
 import Level4Comparison from '@/components/game/Level4Comparison';
 import Level5SplitScreen from '@/components/game/Level5SplitScreen';
 import RoleBriefing from '@/components/game/RoleBriefing';
+import HowToPlay from '@/components/game/HowToPlay';
 
 const Index = () => {
   const { state, navigate, startLevel, completeLevel, resetGame } = useGameState();
@@ -32,7 +33,11 @@ const Index = () => {
       <AnimatePresence mode="wait">
         <motion.div key={state.currentScreen + state.currentLevel} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
           {state.currentScreen === 'start' && (
-            <StartScreen bestScore={state.bestScore} onStart={() => navigate('roleBriefing')} />
+            <StartScreen 
+              state={state} 
+              onStartLevel={startLevel} 
+              onNavigate={navigate} 
+            />
           )}
           {state.currentScreen === 'roleBriefing' && (
             <RoleBriefing onContinue={() => navigate('levelSelect')} />
@@ -50,6 +55,7 @@ const Index = () => {
             <LevelResults
               result={currentResult}
               isLastLevel={state.currentLevel === 5}
+              onDashboard={() => navigate('start')}
               onNext={() => {
                 if (state.currentLevel === 5 && state.levelResults.length === 5) {
                   navigate('finalDashboard');
@@ -62,6 +68,9 @@ const Index = () => {
           )}
           {state.currentScreen === 'finalDashboard' && (
             <FinalDashboard results={state.levelResults} totalScore={state.totalScore} onPlayAgain={resetGame} />
+          )}
+          {state.currentScreen === 'howToPlay' && (
+            <HowToPlay onBack={() => navigate('start')} />
           )}
         </motion.div>
       </AnimatePresence>
