@@ -45,7 +45,10 @@ export default function Level3Terminal({ onComplete }: Props) {
   const [showGuide, setShowGuide] = useState(true);
   const timer = useTimer(150);
 
-  useEffect(() => { timer.start(); }, []);
+  useEffect(() => { 
+    window.scrollTo(0, 0);
+    timer.start(); 
+  }, []);
 
   const handleStepComplete = (stepId: string, isCorrectOrder: boolean) => {
     if (isCorrectOrder) setStepScore(s => s + 10);
@@ -114,17 +117,16 @@ export default function Level3Terminal({ onComplete }: Props) {
         )}
       </AnimatePresence>
 
-      <LevelGuideModal
-        visible={showGuide}
-        onClose={() => setShowGuide(false)}
+      <LevelGuideModal 
+        visible={showGuide} 
+        onClose={() => { setShowGuide(false); window.scrollTo(0, 0); }} 
         level={3}
-        title={LEVEL_TITLES[3]}
-        interactionModel="TERMINAL_TABS"
+        title="Outpatient Rule Validation"
+        interactionModel="DETECTIVE_INVESTIGATION"
         instructions={[
-          "Check the MHI screen first — SB=N means split billing is not configured for this patient.",
-          "Check the CFI screen — SPLITBL=N confirms the facility is also NOT set up.",
-          "When both indicators are 'N', split billing CANNOT be applied.",
-          "Do NOT apply split billing; both screens indicate no configuration."
+          "Analyze the SB and SPLITBL indicators for outpatient facilities.",
+          "If either indicator is 'N', split billing cannot be applied.",
+          "Ensure the service date aligns with the enrollment period."
         ]}
       />
 

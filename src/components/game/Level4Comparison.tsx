@@ -46,7 +46,10 @@ export default function Level4Comparison({ onComplete }: Props) {
   const [showGuide, setShowGuide] = useState(true);
   const timer = useTimer(180);
 
-  useEffect(() => { timer.start(); }, []);
+  useEffect(() => { 
+    window.scrollTo(0, 0);
+    timer.start(); 
+  }, []);
 
   const handleStepComplete = (stepId: string, isCorrectOrder: boolean) => {
     if (isCorrectOrder) setStepScore(s => s + 10);
@@ -117,15 +120,14 @@ export default function Level4Comparison({ onComplete }: Props) {
 
       <LevelGuideModal
         visible={showGuide}
-        onClose={() => setShowGuide(false)}
+        onClose={() => { setShowGuide(false); window.scrollTo(0, 0); }}
         level={4}
-        title={LEVEL_TITLES[4]}
-        interactionModel="COMPARISON"
+        title="Clinical Exclusions Audit"
+        interactionModel="DETECTIVE_INVESTIGATION"
         instructions={[
-          "SB=Y and SPLITBL=Y are both set — facility appears configured for split billing.",
-          "Check the revenue codes — Rev Code 0540 (Ambulance) is a clinical exclusion.",
-          "Clinical exclusions override all facility configuration flags.",
-          "Result: Do NOT apply split billing — Ambulance services are always exempt."
+          "Analyze the revenue codes—some services like Ambulance (0540) are excluded.",
+          "Check the service date against the inpatient admission window.",
+          "Identify and apply the clinical exclusion logic to the claim."
         ]}
       />
 

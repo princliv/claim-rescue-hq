@@ -24,35 +24,35 @@ interface Props {
   interactionModel?: string;
 }
 
-/* ── Gesture Animations ─────────────────────────────────── */
+/* ── Gesture Animations (Blue Premium) ─────────────────── */
 
 function SelectOneGesture() {
   return (
-    <div className="relative w-48 h-24 mx-auto flex flex-col justify-center gap-1.5 pt-2">
+    <div className="relative w-56 h-32 mx-auto flex flex-col justify-center gap-2 pt-2">
       {[1, 2, 3].map((i) => (
         <motion.div
           key={i}
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2 + i * 0.1 }}
-          className={`h-6 rounded-lg border-2 text-[8px] font-mono font-black flex items-center px-3 transition-all ${
+          className={`h-8 rounded-xl border-2 text-[10px] font-mono font-black flex items-center px-4 transition-all ${
             i === 2
               ? 'border-primary bg-primary/10 text-primary shadow-lg shadow-primary/5'
               : 'border-slate-200/50 bg-white/40 text-slate-300'
           }`}
         >
           {i === 2 ? 'CORRECT_DECISION' : `NEUTRAL_PATH_0${i}`}
-          {i === 2 && <MdCheckCircle size={10} className="ml-auto text-primary" />}
+          {i === 2 && <MdCheckCircle size={12} className="ml-auto text-primary" />}
         </motion.div>
       ))}
       <motion.div
         className="absolute right-0 text-primary select-none drop-shadow-md"
         initial={{ y: 0, x: 0 }}
-        animate={{ y: [0, 8, 8, 0], x: [0, 4, -4, 0] }}
+        animate={{ y: [0, 10, 10, 0], x: [0, 5, -5, 0] }}
         transition={{ duration: 2, repeat: Infinity, repeatDelay: 0.8, ease: 'easeInOut' }}
-        style={{ top: 24, right: 6 }}
+        style={{ top: 32, right: 8 }}
       >
-        <BsCursorFill size={18} className="fill-primary" />
+        <BsCursorFill size={22} className="fill-primary" />
       </motion.div>
     </div>
   );
@@ -60,28 +60,28 @@ function SelectOneGesture() {
 
 function DragGesture() {
   return (
-    <div className="relative w-48 h-24 mx-auto flex items-center justify-center">
-      <div className="flex items-center gap-4">
+    <div className="relative w-56 h-32 mx-auto flex items-center justify-center">
+      <div className="flex items-center gap-6">
         <motion.div
-          className="w-14 h-10 rounded-xl border-2 border-primary bg-primary/10 flex flex-col items-center justify-center gap-0.5 shadow-lg shadow-primary/5"
-          animate={{ x: [0, 10, 0] }}
+          className="w-18 h-14 rounded-2xl border-2 border-primary bg-primary/10 flex flex-col items-center justify-center gap-1 shadow-lg shadow-primary/5"
+          animate={{ x: [0, 12, 0] }}
           transition={{ duration: 1.8, repeat: Infinity, repeatDelay: 0.5, ease: 'easeInOut' }}
         >
-          <MdOutlineFileCopy size={14} className="text-primary" />
-          <span className="text-[7px] font-mono font-black text-primary uppercase">Claim</span>
+          <MdOutlineFileCopy size={18} className="text-primary" />
+          <span className="text-[9px] font-mono font-black text-primary uppercase">Claim</span>
         </motion.div>
         <motion.div className="text-primary/20 font-black text-xs animate-pulse">→</motion.div>
-        <div className="w-12 h-12 rounded-xl border-2 border-dashed border-slate-300/50 flex items-center justify-center">
-          <span className="text-[6px] font-mono font-black text-slate-300 text-center uppercase tracking-tight">Zone<br/>Alpha</span>
+        <div className="w-16 h-16 rounded-2xl border-2 border-dashed border-slate-300/50 flex items-center justify-center">
+          <span className="text-[8px] font-mono font-black text-slate-300 text-center uppercase tracking-tight">Zone<br/>Alpha</span>
         </div>
       </div>
       <motion.div
-        className="absolute text-slate-400/60 select-none drop-shadow-lg"
-        style={{ bottom: 2, left: 20 }}
-        animate={{ x: [0, 50, 50, 0], opacity: [0, 1, 1, 0] }}
+        className="absolute text-slate-400 select-none drop-shadow-xl"
+        style={{ bottom: 4, left: 32 }}
+        animate={{ x: [0, 60, 60, 0], opacity: [0, 1, 1, 0] }}
         transition={{ duration: 2, repeat: Infinity, repeatDelay: 0.6, ease: 'easeInOut' }}
       >
-        <BsHandIndexThumbFill size={26} className="fill-slate-400/40" />
+        <BsHandIndexThumbFill size={32} className="fill-slate-400/30" />
       </motion.div>
     </div>
   );
@@ -95,29 +95,29 @@ function TabGesture() {
   }, []);
 
   return (
-    <div className="relative w-48 h-24 mx-auto flex flex-col justify-center">
-      <div className="flex gap-1 mb-1 h-5">
+    <div className="relative w-56 h-32 mx-auto flex flex-col justify-center">
+      <div className="flex gap-1.5 mb-1 h-7">
         {['MHI', 'CAS', 'CGX'].map((tab, i) => (
           <div
             key={tab}
-            className={`flex-1 rounded-t-lg border-t-2 border-x-2 text-[7px] font-mono font-black flex items-center justify-center transition-all ${
-                i === active ? 'border-primary/30 bg-primary/5 text-primary' : 'border-slate-100 bg-slate-50 text-slate-300'
+            className={`flex-1 rounded-t-xl border-t-2 border-x-2 text-[9px] font-mono font-black flex items-center justify-center transition-all ${
+                i === active ? 'border-primary/40 bg-primary/5 text-primary shadow-sm' : 'border-slate-100 bg-slate-50 text-slate-300'
             }`}
           >
             {tab}
           </div>
         ))}
       </div>
-      <div className="h-10 rounded-b-lg rounded-tr-lg border-2 border-slate-100 bg-white flex items-center justify-center shadow-sm">
-        <span className="text-[7px] font-mono font-black text-slate-400 uppercase tracking-widest">LIVE DATA FEED...</span>
+      <div className="h-14 rounded-b-xl rounded-tr-xl border-2 border-slate-100 bg-white flex items-center justify-center shadow-sm">
+        <span className="text-[9px] font-mono font-black text-slate-400 uppercase tracking-widest">LIVE DATA FEED...</span>
       </div>
       <motion.div
-        className="absolute text-primary select-none drop-shadow-md"
-        style={{ bottom: 0, left: active * 55 + 12 }}
-        animate={{ y: [0, -10, 0] }}
+        className="absolute text-primary select-none drop-shadow-lg"
+        style={{ bottom: 0, left: active * 65 + 16 }}
+        animate={{ y: [0, -12, 0] }}
         transition={{ duration: 0.45, repeat: Infinity, repeatDelay: 0.55 }}
       >
-        <BsCursorFill size={16} className="fill-primary" />
+        <BsCursorFill size={20} className="fill-primary" />
       </motion.div>
     </div>
   );
@@ -125,25 +125,25 @@ function TabGesture() {
 
 function CompareGesture() {
   return (
-    <div className="relative w-48 h-24 mx-auto flex items-center gap-3">
-      <div className="flex-1 h-12 rounded-xl border-2 border-primary/20 bg-primary/5 p-1.5 overflow-hidden">
-        <div className="text-[6px] font-mono font-black text-primary/40 mb-1 uppercase tracking-tighter">Claim_A</div>
+    <div className="relative w-56 h-32 mx-auto flex items-center gap-4">
+      <div className="flex-1 h-16 rounded-2xl border-2 border-primary/20 bg-primary/5 p-2 overflow-hidden">
+        <div className="text-[8px] font-mono font-black text-primary/40 mb-1 uppercase tracking-tighter">Claim_A</div>
         <motion.div
-          className="h-1 rounded-full bg-rose-500/30 w-3/4 mb-1"
+          className="h-1.5 rounded-full bg-rose-500/40 w-3/4 mb-1.5"
           animate={{ opacity: [1, 0.4, 1] }}
           transition={{ duration: 1.2, repeat: Infinity }}
         />
-        <div className="h-1 rounded-full bg-primary/5 w-full" />
+        <div className="h-1.5 rounded-full bg-primary/10 w-full" />
       </div>
-      <MdVisibility size={16} className="text-primary/20 animate-pulse" />
-      <div className="flex-1 h-12 rounded-xl border-2 border-emerald-200 bg-emerald-50 p-1.5 overflow-hidden">
-        <div className="text-[6px] font-mono font-black text-emerald-400 mb-1 uppercase tracking-tighter">Source_B</div>
+      <MdVisibility size={20} className="text-primary/20 animate-pulse" />
+      <div className="flex-1 h-16 rounded-2xl border-2 border-emerald-200 bg-emerald-50 p-2 overflow-hidden">
+        <div className="text-[8px] font-mono font-black text-emerald-400 mb-1 uppercase tracking-tighter">Source_B</div>
         <motion.div
-          className="h-1 rounded-full bg-emerald-500/60 w-1/2 mb-1"
+          className="h-1.5 rounded-full bg-emerald-500/60 w-1/2 mb-1.5"
           animate={{ opacity: [1, 0.4, 1] }}
           transition={{ duration: 1.2, repeat: Infinity, delay: 0.3 }}
         />
-        <div className="h-1 rounded-full bg-emerald-500/10 w-full" />
+        <div className="h-1.5 rounded-full bg-emerald-500/10 w-full" />
       </div>
     </div>
   );
@@ -151,33 +151,33 @@ function CompareGesture() {
 
 function SplitScreenGesture() {
   return (
-    <div className="relative w-48 h-24 mx-auto flex flex-col justify-center gap-2">
-      <div className="flex gap-2 h-14">
-        <div className="flex-1 rounded-xl border-2 border-primary/10 bg-primary/5 p-2 space-y-1.5 overflow-hidden">
-           {[1, 2].map(i => (
+    <div className="relative w-56 h-32 mx-auto flex flex-col justify-center gap-2">
+      <div className="flex gap-2 h-18">
+        <div className="flex-1 rounded-2xl border-2 border-primary/10 bg-primary/5 p-3 space-y-2 overflow-hidden">
+           {[1, 2, 3].map(i => (
              <motion.div 
                key={i}
                animate={{ opacity: [0.3, 1, 0.3] }}
                transition={{ duration: 2, repeat: Infinity, delay: i * 0.4 }}
-               className="h-1 w-full bg-primary/20 rounded-full" 
+               className="h-1.5 w-full bg-primary/20 rounded-full" 
              />
            ))}
         </div>
-        <div className="flex-[0.5] rounded-xl border-2 border-amber-200 bg-amber-50 flex items-center justify-center">
+        <div className="flex-[0.5] rounded-2xl border-2 border-blue-200 bg-blue-50 flex items-center justify-center shadow-inner">
            <motion.div 
              animate={{ scale: [1, 1.2, 1], rotate: [0, 10, -10, 0] }}
              transition={{ duration: 3, repeat: Infinity }}
-             className="text-amber-500"
+             className="text-primary/60"
            >
-              <MdTimeline size={20} />
+              <MdTimeline size={24} />
            </motion.div>
         </div>
       </div>
       <div className="flex items-center justify-between px-1">
-        <span className="text-[6px] font-mono font-black text-slate-400 uppercase tracking-widest">Multi-Layer Validation</span>
-        <div className="flex gap-1">
-           <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-           <div className="w-1.5 h-1.5 rounded-full bg-slate-200" />
+        <span className="text-[8px] font-mono font-black text-slate-400 uppercase tracking-widest">Multi-Layer Validation Active</span>
+        <div className="flex gap-1.5">
+           <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+           <div className="w-2 h-2 rounded-full bg-slate-200" />
         </div>
       </div>
     </div>
@@ -211,6 +211,9 @@ export default function LevelGuideModal({ visible, onClose, level, title, instru
   useEffect(() => {
     if (!visible) return;
     
+    // Always scroll to top when modal becomes visible
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
     setCountdown(5);
     const interval = setInterval(() => {
       setCountdown(prev => {
@@ -228,23 +231,23 @@ export default function LevelGuideModal({ visible, onClose, level, title, instru
 
   const getInteractionTitle = () => {
     switch (interactionModel) {
-      case 'DETECTIVE_INVESTIGATION': return 'PICK ONE';
-      case 'DRAG_AND_DROP': return 'DRAG & DROP';
-      case 'TERMINAL_TABS': return 'SYNC TABS';
-      case 'COMPARISON': return 'COMPARE';
-      case 'SPLIT_SCREEN': return 'SPLIT SCREEN';
-      default: return 'DETECTIVE';
+      case 'DETECTIVE_INVESTIGATION': return 'Pick One';
+      case 'DRAG_AND_DROP': return 'Drag & Drop';
+      case 'TERMINAL_TABS': return 'Sync Tabs';
+      case 'COMPARISON': return 'Compare Data';
+      case 'SPLIT_SCREEN': return 'Split Screen';
+      default: return 'Directive';
     }
   };
 
   const getInteractionSubtitle = () => {
     switch (interactionModel) {
-      case 'DETECTIVE_INVESTIGATION': return 'SELECT THE CORRECT PROTOCOL TO PROCEED';
-      case 'DRAG_AND_DROP': return 'MOVE THE DATA CARD TO THE CORRECT ZONE';
-      case 'TERMINAL_TABS': return 'SYNC ALL PORTAL TABS TO UNLOCK';
-      case 'COMPARISON': return 'COMPARE SIDE-BY-SIDE DATA STREAMS';
-      case 'SPLIT_SCREEN': return 'VALDIATE MULTI-LAYER RULE LOGIC';
-      default: return 'FOLLOW THE INVESTIGATION DIRECTIVE';
+      case 'DETECTIVE_INVESTIGATION': return 'SELECT THE OPTIMAL ANALYTIC PATH TO PROCEED';
+      case 'DRAG_AND_DROP': return 'MOVE THE DATA CARD TO THE CORRECT STATUS ZONE';
+      case 'TERMINAL_TABS': return 'ACCESS AND SYNC ALL SYSTEM FEEDS TO UNLOCK';
+      case 'COMPARISON': return 'EXECUTE SIDE-BY-SIDE CROSS-MATCH VALIDATION';
+      case 'SPLIT_SCREEN': return 'VALIDATE MULTI-LAYER REGULATORY RULE LOGIC';
+      default: return 'FOLLOW THE ESTABLISHED INVESTIGATION PROTOCOL';
     }
   };
 
@@ -255,105 +258,76 @@ export default function LevelGuideModal({ visible, onClose, level, title, instru
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-xl p-4"
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-[#0a0f18]/40 backdrop-blur-2xl p-6"
           onClick={onClose}
         >
           <motion.div
-            initial={{ scale: 0.85, opacity: 0, y: 40 }}
+            initial={{ scale: 0.9, opacity: 0, y: 40 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.9, opacity: 0, y: 20 }}
-            transition={{ type: 'spring', stiffness: 220, damping: 24 }}
+            exit={{ scale: 0.92, opacity: 0, y: 20 }}
+            transition={{ type: 'spring', stiffness: 220, damping: 25 }}
             onClick={e => e.stopPropagation()}
-            className="bg-white border border-slate-200 rounded-[64px] p-0 max-w-lg w-full overflow-hidden shadow-[0_50px_100px_rgba(0,0,0,0.15)] relative"
+            className="bg-white/95 backdrop-blur-3xl border-2 border-white/20 rounded-[48px] shadow-[0_50px_100px_rgba(0,0,0,0.2)] max-w-xl w-full overflow-hidden relative"
           >
-            {/* Soft Gradient Top Bar */}
-            <div className="h-24 bg-gradient-to-b from-emerald-400/10 to-transparent absolute top-0 left-0 right-0 pointer-events-none" />
-            
+            {/* Top Indicator */}
+            <div className="h-2 bg-primary w-full shadow-[0_4px_10px_rgba(37,99,235,0.3)]" />
+
             <div className="p-10 flex flex-col items-center">
               
-              {/* Close Button */}
-              <button 
-                onClick={onClose} 
-                className="absolute top-8 right-8 text-slate-300 hover:text-slate-600 p-2 rounded-full hover:bg-slate-100 transition-all active:scale-90"
-              >
-                <X size={20} />
-              </button>
-
-              {/* Central Iconic Animation Container */}
-              <div className="relative mb-8 mt-4">
-                 <motion.div 
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    transition={{ type: 'spring', stiffness: 200, delay: 0.2 }}
-                    className="w-32 h-32 rounded-full bg-emerald-50 border-4 border-white shadow-lg flex items-center justify-center relative z-10"
-                 >
-                    <div className="scale-125">
-                       <InteractionVisualAid model={interactionModel} />
-                    </div>
-                 </motion.div>
+              {/* Animation Container (Image 5 style) */}
+              <div className="w-full max-w-[400px] h-48 bg-slate-50 border-2 border-slate-100 rounded-[40px] flex items-center justify-center relative overflow-hidden shadow-inner mb-8">
+                 <div className="scale-125">
+                    <InteractionVisualAid model={interactionModel} />
+                 </div>
                  
-                 {/* Decorative Pulse Rings */}
-                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <div className="w-40 h-40 rounded-full border border-emerald-500/10 animate-[ping_3s_linear_infinite]" />
-                    <div className="w-48 h-48 rounded-full border border-emerald-500/5 animate-[ping_4s_linear_infinite]" />
+                 {/* Decorative elements */}
+                 <div className="absolute top-4 left-4 flex gap-1.5">
+                    <div className="w-1.5 h-1.5 rounded-full bg-slate-200" />
+                    <div className="w-1.5 h-1.5 rounded-full bg-slate-200" />
+                 </div>
+                 <div className="absolute bottom-4 right-4 flex gap-1">
+                    <div className="w-8 h-1 bg-primary/10 rounded-full" />
                  </div>
               </div>
 
-              {/* Title & Subtitle Section */}
-              <div className="text-center mb-8 relative z-20">
-                 <h2 className="text-3xl font-heading font-black text-slate-900 tracking-tighter mb-2 uppercase italic">
-                    {getInteractionTitle()}
-                 </h2>
-                 <p className="text-[10px] font-mono font-black text-emerald-600/60 uppercase tracking-[0.2em]">
+              {/* Analytical Directive Badge */}
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary font-mono text-[10px] font-black tracking-widest uppercase mb-4 shadow-sm border border-primary/5">
+                 Analytical Directive
+              </div>
+
+              {/* Title & Subtitle */}
+              <div className="text-center mb-8">
+                 <h2 className="text-4xl font-heading font-black text-slate-900 tracking-tighter mb-2">{getInteractionTitle()}</h2>
+                 <p className="text-[11px] font-mono font-black text-slate-400 uppercase tracking-[0.1em] px-4 leading-relaxed">
                     {getInteractionSubtitle()}
                  </p>
               </div>
 
-              {/* Protocol Mini-List (Clean & Subtle) */}
-              <div className="w-full max-w-sm space-y-1.5 mb-10">
-                 <div className="flex items-center gap-2 mb-2 justify-center opacity-40">
-                    <Shield size={10} className="text-emerald-500" />
-                    <span className="text-[8px] font-black uppercase tracking-widest text-slate-400">Security Protocol Alpha</span>
-                 </div>
-                 {instructions.slice(0, 3).map((text, i) => (
-                    <motion.div 
-                       key={i}
-                       initial={{ opacity: 0, y: 10 }}
-                       animate={{ opacity: 1, y: 0 }}
-                       transition={{ delay: 0.4 + i * 0.1 }}
-                       className="text-[10px] font-mono font-bold text-slate-400 text-center leading-tight truncate px-4"
-                    >
-                       • {text}
-                    </motion.div>
-                 ))}
-              </div>
-
-              {/* Main Action Button (Centered, theme colored) */}
-              <button
-                onClick={onClose}
-                className="w-full max-w-xs py-5 rounded-[28px] bg-emerald-500 text-white font-heading font-black text-sm uppercase tracking-widest shadow-[0_20px_40px_rgba(16,185,129,0.3)] hover:bg-emerald-600 hover:-translate-y-1 transition-all active:scale-95 group relative overflow-hidden"
-              >
-                <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+              {/* Action Button */}
+              <div className="w-full relative group">
+                <motion.button
+                  whileHover={{ y: -5, scale: 1.01 }}
+                  whileTap={{ scale: 0.99 }}
+                  onClick={onClose}
+                  className="w-full py-6 bg-primary text-white rounded-[32px] font-mono font-black text-sm uppercase tracking-[0.2em] shadow-[0_30px_60px_rgba(37,99,235,0.2)] hover:bg-blue-600 transition-all z-10 relative overflow-hidden"
+                >
+                  <span className="relative z-10">Start Assessment</span>
+                  
+                  {/* Countdown Progress */}
+                  <div className="absolute inset-0 bg-white/10 pointer-events-none">
+                     <motion.div 
+                        initial={{ width: '0%' }}
+                        animate={{ width: '100%' }}
+                        transition={{ duration: 5, ease: 'linear' }}
+                        className="h-full bg-white/20 origin-left"
+                     />
+                  </div>
+                </motion.button>
                 
-                {/* Countdown Fill Bar */}
-                <div className="absolute bottom-0 left-0 right-0 h-1 bg-emerald-700/30">
-                   <motion.div 
-                     key={visible ? 'active' : 'inactive'}
-                     initial={{ width: '0%' }}
-                     animate={{ width: '100%' }}
-                     transition={{ duration: 5, ease: 'linear' }}
-                     className="h-full bg-white/40"
-                   />
-                </div>
-
-                <span className="relative z-10 flex items-center justify-center gap-2">
-                  Start Assessment ({countdown}S) <ChevronRight size={18} />
-                </span>
-              </button>
-              
-              <p className="mt-4 text-[9px] font-mono font-black text-slate-300 uppercase tracking-widest">
-                 System Ready: L{level} Directive Active
-              </p>
+                <p className="text-center text-[10px] font-mono font-black text-slate-300 mt-6 uppercase tracking-[0.2em]">
+                   Link active in {countdown}s
+                </p>
+              </div>
 
             </div>
           </motion.div>

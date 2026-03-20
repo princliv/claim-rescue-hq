@@ -45,7 +45,10 @@ export default function Level1Detective({ onComplete }: Props) {
   const [allStepsDone, setAllStepsDone] = useState(false);
   const timer = useTimer(120);
 
-  useEffect(() => { timer.start(); }, []);
+  useEffect(() => { 
+    window.scrollTo(0, 0);
+    timer.start(); 
+  }, []);
 
   const handleStepComplete = (stepId: string, isCorrectOrder: boolean) => {
     if (isCorrectOrder) setStepScore(s => s + 10);

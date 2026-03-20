@@ -45,7 +45,10 @@ export default function Level2DragDrop({ onComplete }: Props) {
   const [showGuide, setShowGuide] = useState(true);
   const timer = useTimer(150);
 
-  useEffect(() => { timer.start(); }, []);
+  useEffect(() => { 
+    window.scrollTo(0, 0);
+    timer.start(); 
+  }, []);
 
   const handleStepComplete = (stepId: string, isCorrectOrder: boolean) => {
     if (isCorrectOrder) setStepScore(s => s + 10);
@@ -116,14 +119,14 @@ export default function Level2DragDrop({ onComplete }: Props) {
 
       <LevelGuideModal
         visible={showGuide}
-        onClose={() => setShowGuide(false)}
+        onClose={() => { setShowGuide(false); window.scrollTo(0, 0); }}
         level={2}
-        title={LEVEL_TITLES[2]}
-        interactionModel="DRAG_AND_DROP"
+        title="Physician Claims Logic"
+        interactionModel="DETECTIVE_INVESTIGATION"
         instructions={[
-          "Review the MHI screen — a professional (CMS 1500) claim has SB=N, not SB=Y.",
-          "Check the CFI screen — physician records have no SPLITBL field at all.",
-          "Professional claims are globally exempt from split billing rules.",
+          "Analyze the claim type; professional claims follow different rules than facilities.",
+          "Check the MHI screen for the 'SB' indicator—it should be 'N' for physicians.",
+          "The '3-Day Rule' only applies to inpatient facility records.",
           "Result: Do NOT apply split billing for physician claims."
         ]}
       />

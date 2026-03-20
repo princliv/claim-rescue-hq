@@ -46,7 +46,10 @@ export default function Level5SplitScreen({ onComplete }: Props) {
   const [showGuide, setShowGuide] = useState(true);
   const timer = useTimer(240);
 
-  useEffect(() => { timer.start(); }, []);
+  useEffect(() => { 
+    window.scrollTo(0, 0);
+    timer.start(); 
+  }, []);
 
   const handleStepComplete = (stepId: string, isCorrectOrder: boolean) => {
     if (isCorrectOrder) setStepScore(s => s + 10);
@@ -115,17 +118,16 @@ export default function Level5SplitScreen({ onComplete }: Props) {
         )}
       </AnimatePresence>
 
-      <LevelGuideModal
-        visible={showGuide}
-        onClose={() => setShowGuide(false)}
+      <LevelGuideModal 
+        visible={showGuide} 
+        onClose={() => { setShowGuide(false); window.scrollTo(0, 0); }} 
         level={5}
-        title={LEVEL_TITLES[5]}
-        interactionModel="SPLIT_SCREEN"
+        title="Advanced Clinical Logic"
+        interactionModel="DETECTIVE_INVESTIGATION"
         instructions={[
-          "SPLITBL=3 signals the 72-hour window rule — dates must be verified carefully.",
-          "Even if the window is met, check HCPCS codes for clinical exclusions.",
-          "HCPCS G0257 is on the exclusion list — it overrides the 3-day rule.",
-          "Result: Do NOT apply split billing — G0257 is a documented clinical exclusion."
+          "Compare the HCPCS code G0257 against the 3-day exclusionary rule.",
+          "Check the SPLITBL=3 indicator for advanced inpatient logic.",
+          "Validate the clinical necessity and service window alignment."
         ]}
       />
 
