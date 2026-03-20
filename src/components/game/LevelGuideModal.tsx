@@ -267,16 +267,16 @@ export default function LevelGuideModal({ visible, onClose, level, title, instru
             exit={{ scale: 0.92, opacity: 0, y: 20 }}
             transition={{ type: 'spring', stiffness: 220, damping: 25 }}
             onClick={e => e.stopPropagation()}
-            className="bg-white/95 backdrop-blur-3xl border-2 border-white/20 rounded-[48px] shadow-[0_50px_100px_rgba(0,0,0,0.2)] max-w-xl w-full overflow-hidden relative"
+            className="bg-white/95 backdrop-blur-3xl border-2 border-white/20 rounded-[48px] shadow-[0_50px_100px_rgba(0,0,0,0.2)] max-w-md w-full overflow-hidden relative"
           >
             {/* Top Indicator */}
             <div className="h-2 bg-primary w-full shadow-[0_4px_10px_rgba(37,99,235,0.3)]" />
 
-            <div className="p-10 flex flex-col items-center">
+            <div className="p-6 flex flex-col items-center">
               
               {/* Animation Container (Image 5 style) */}
-              <div className="w-full max-w-[400px] h-48 bg-slate-50 border-2 border-slate-100 rounded-[40px] flex items-center justify-center relative overflow-hidden shadow-inner mb-8">
-                 <div className="scale-125">
+              <div className="w-full max-w-[320px] h-32 bg-slate-50 border-2 border-slate-100 rounded-[40px] flex items-center justify-center relative overflow-hidden shadow-inner mb-4">
+                 <div className="">
                     <InteractionVisualAid model={interactionModel} />
                  </div>
                  
@@ -291,14 +291,14 @@ export default function LevelGuideModal({ visible, onClose, level, title, instru
               </div>
 
               {/* Analytical Directive Badge */}
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary font-mono text-[10px] font-black tracking-widest uppercase mb-4 shadow-sm border border-primary/5">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary font-mono text-[10px] font-black tracking-widest uppercase mb-2 shadow-sm border border-primary/5">
                  Analytical Directive
               </div>
 
               {/* Title & Subtitle */}
-              <div className="text-center mb-8">
-                 <h2 className="text-4xl font-heading font-black text-slate-900 tracking-tighter mb-2">{getInteractionTitle()}</h2>
-                 <p className="text-[11px] font-mono font-black text-slate-400 uppercase tracking-[0.1em] px-4 leading-relaxed">
+              <div className="text-center mb-4">
+                 <h2 className="text-2xl font-heading font-black text-slate-900 tracking-tighter mb-1">{getInteractionTitle()}</h2>
+                 <p className="text-[10px] font-mono font-black text-slate-400 uppercase tracking-[0.05em] px-4 leading-relaxed">
                     {getInteractionSubtitle()}
                  </p>
               </div>
@@ -309,7 +309,7 @@ export default function LevelGuideModal({ visible, onClose, level, title, instru
                   whileHover={{ y: -5, scale: 1.01 }}
                   whileTap={{ scale: 0.99 }}
                   onClick={onClose}
-                  className="w-full py-6 bg-primary text-white rounded-[32px] font-mono font-black text-sm uppercase tracking-[0.2em] shadow-[0_30px_60px_rgba(37,99,235,0.2)] hover:bg-blue-600 transition-all z-10 relative overflow-hidden"
+                  className="w-full py-4 bg-primary text-white rounded-[28px] font-mono font-black text-xs uppercase tracking-[0.2em] shadow-[0_20px_40px_rgba(37,99,235,0.15)] hover:bg-blue-600 transition-all z-10 relative overflow-hidden"
                 >
                   <span className="relative z-10">Start Assessment</span>
                   
@@ -324,7 +324,7 @@ export default function LevelGuideModal({ visible, onClose, level, title, instru
                   </div>
                 </motion.button>
                 
-                <p className="text-center text-[10px] font-mono font-black text-slate-300 mt-6 uppercase tracking-[0.2em]">
+                <p className="text-center text-[10px] font-mono font-black text-slate-300 mt-2 uppercase tracking-[0.2em]">
                    Link active in {countdown}s
                 </p>
               </div>

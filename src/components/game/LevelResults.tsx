@@ -94,7 +94,7 @@ export default function LevelResults({ result, onNext, onRetry, onDashboard, isL
           <div className="flex-[2] flex flex-col justify-between pt-4 lg:pt-0">
             
             {/* Breakdown Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
               {[
                 { label: 'STEPS', value: result.stepScore, color: 'text-blue-500', icon: <MdOutlineAnalytics size={14} /> },
                 { label: 'QUIZ', value: result.quizScore, color: 'text-emerald-500', icon: <MdFactCheck size={14} /> },
@@ -107,31 +107,31 @@ export default function LevelResults({ result, onNext, onRetry, onDashboard, isL
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.5 + i * 0.1 }}
-                  className="bg-slate-50 rounded-3xl p-4 border border-slate-100 flex flex-col items-center gap-1"
+                  className="bg-slate-50 rounded-[24px] p-3 border border-slate-100 flex flex-col items-center gap-0.5"
                 >
-                  <div className={`${stat.color} mb-1 opacity-70`}>{stat.icon}</div>
-                  <span className="text-[8px] font-mono font-black text-slate-400 uppercase tracking-widest">{stat.label}</span>
-                  <span className={`text-lg font-mono font-black ${stat.color}`}>{stat.value >= 0 ? '+' : ''}{stat.value}</span>
+                  <div className={`${stat.color} mb-0.5 opacity-70`}>{stat.icon}</div>
+                  <span className="text-[7px] font-mono font-black text-slate-400 uppercase tracking-[0.1em]">{stat.label}</span>
+                  <span className={`text-base font-mono font-black ${stat.color}`}>{stat.value >= 0 ? '+' : ''}{stat.value}</span>
                 </motion.div>
               ))}
             </div>
 
-            <div className="bg-slate-900 text-white rounded-[40px] p-8 mb-10 relative overflow-hidden">
+            <div className="bg-slate-900 text-white rounded-[40px] p-6 mb-8 relative overflow-hidden">
                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/20 rounded-bl-full blur-3xl" />
                <div className="flex flex-col md:flex-row items-center justify-between gap-8 relative z-10">
                   <div className="flex flex-col items-center md:items-start">
-                     <span className="text-[9px] font-mono font-black text-slate-400 uppercase tracking-[0.3em] mb-2">Aggregate_Audit_Score</span>
-                     <span className="text-6xl font-mono font-black tracking-tighter text-white">{result.score}</span>
+                     <span className="text-[8px] font-mono font-black text-slate-400 uppercase tracking-[0.25em] mb-1">Aggregate_Audit_Score</span>
+                     <span className="text-5xl font-mono font-black tracking-tighter text-white">{result.score}</span>
                   </div>
                   <div className="flex gap-8">
                      <div className="flex flex-col items-center">
-                        <span className="text-[8px] font-mono font-black text-slate-500 uppercase tracking-widest mb-1">ACCURACY</span>
-                        <span className="text-2xl font-mono font-black text-emerald-400">{accuracy}%</span>
+                        <span className="text-[7px] font-mono font-black text-slate-500 uppercase tracking-widest mb-1">ACCURACY</span>
+                        <span className="text-xl font-mono font-black text-emerald-400">{accuracy}%</span>
                      </div>
                      <div className="h-10 w-px bg-white/10" />
                      <div className="flex flex-col items-center">
-                        <span className="text-[8px] font-mono font-black text-slate-500 uppercase tracking-widest mb-1">PERFORMANCE</span>
-                        <span className="text-2xl font-mono font-black text-primary">{performancePct}%</span>
+                        <span className="text-[7px] font-mono font-black text-slate-500 uppercase tracking-widest mb-1">PERFORMANCE</span>
+                        <span className="text-xl font-mono font-black text-primary">{performancePct}%</span>
                      </div>
                   </div>
                </div>
