@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import AppDashboard from './AppDashboard';
+import StartSimulationModal from './StartSimulationModal';
 import { GameState } from '@/types/game';
 
 interface StartScreenProps {
@@ -17,6 +18,12 @@ const LEVEL_DATA = [
 ];
 
 export default function StartScreen({ state, onStartLevel, onNavigate }: StartScreenProps) {
+  const [showWelcome, setShowWelcome] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setShowWelcome(true), 4000);
+    return () => clearTimeout(timer);
+  }, []);
   
   // Calculate stats from state
   const completedLevels = state.levelResults.length;
@@ -48,6 +55,7 @@ export default function StartScreen({ state, onStartLevel, onNavigate }: StartSc
   };
 
   return (
+    <>
     <AppDashboard 
       userStats={userStats}
       levels={levelsWithStatus}
@@ -55,5 +63,19 @@ export default function StartScreen({ state, onStartLevel, onNavigate }: StartSc
       onStartShift={() => onNavigate('roleBriefing')}
       onNavigate={onNavigate}
     />
+    
+    <StartSimulationModal
+      visible={showWelcome}
+      onEnterGame={() => {
+        setShowWelcome(false);
+        onNavigate('roleBriefing');
+      }}
+      onHowToPlay={() => {
+        setShowWelcome(false);
+        onNavigate('howToPlay');
+      }}
+      onClose={() => setShowWelcome(false)}
+    />
+    </>
   );
 }
