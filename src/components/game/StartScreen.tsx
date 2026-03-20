@@ -1,7 +1,8 @@
 import { motion } from 'framer-motion';
 import { Activity, BookOpen, Trophy, Shield, Target, ChevronRight, Layers, FileText, Search, Puzzle } from 'lucide-react';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import HowToPlayModal from './HowToPlayModal';
+import StartSimulationModal from './StartSimulationModal';
 import ParticleField from './ParticleField';
 import section2Bg from '@/assets/bg_section2.png';
 
@@ -20,6 +21,12 @@ const LEVELS = [
 
 export default function StartScreen({ bestScore, onStart }: StartScreenProps) {
   const [showHelp, setShowHelp] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setShowWelcome(true), 4000);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Auto-scrolling marquee settings
   const marqueeDuration = 30;
@@ -191,6 +198,15 @@ export default function StartScreen({ bestScore, onStart }: StartScreenProps) {
       </section>
 
       <HowToPlayModal open={showHelp} onClose={() => setShowHelp(false)} />
+      
+      <StartSimulationModal 
+        visible={showWelcome} 
+        onEnterGame={() => {
+          setShowWelcome(false);
+          onStart();
+        }}
+        onReadMore={() => setShowWelcome(false)}
+      />
     </div>
   );
 }
